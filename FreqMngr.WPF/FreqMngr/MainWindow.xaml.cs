@@ -430,76 +430,101 @@ namespace FreqMngr
             }
         }        
 
-        private void MnuCut_Click(object sender, RoutedEventArgs e)
+        private Task<bool> FreqsCutAsync(List<Freq> freqs)
         {
-            List<Freq> selectedFreqs = GetSelectedFreqs();
-
-            if (selectedFreqs.Count > 0)
+            return Task.Factory.StartNew(() =>
             {
-                FreqsClipboard = new List<Freq>();
-                foreach (Freq freq in selectedFreqs)
+                if (freqs.Count > 0)
                 {
-                    //Remove freq to cut from parent group lists
-                    FreqGroup parentGroup = freq.GetParent();
-                    parentGroup.RemoveFreq(freq);
+                    FreqsClipboard = new List<Freq>();
+                    foreach (Freq freq in freqs)
+                    {
+                        //Remove freq to cut from parent group lists
+                        FreqGroup parentGroup = freq.GetParent();
+                        parentGroup.RemoveFreq(freq);
 
-                    //Unlink freq with previous parent group
-                    freq.SetParent(null);
+                        //Unlink freq with previous parent group
+                        freq.SetParent(null);
 
-                    //Add to clipboard
-                    FreqsClipboard.Add(freq);
+                        //Add to clipboard
+                        FreqsClipboard.Add(freq);
+                    }
+                    return true;
                 }
-
-                RefreshDataGrid();
-            }
+                return false;
+            });
         }
 
-        private void MnuCopy_Click(object sender, RoutedEventArgs e)
+        private Task<bool> FreqsCopyAsync(List<Freq> freqs)
         {
-            List<Freq> selectedFreqs = GetSelectedFreqs();
-
-            if (selectedFreqs.Count > 0)
+            return Task.Factory.StartNew(() =>
             {
-                FreqsClipboard = new List<Freq>();
-                foreach (Freq freq in selectedFreqs)
+                if (freqs.Count > 0)
                 {
-                    Freq newFreq = freq.Clone();
+                    FreqsClipboard = new List<Freq>();
+                    foreach (Freq freq in freqs)
+                    {
+                        Freq newFreq = freq.Clone();
 
-                    //Unlink cloned Freq with old parent group
-                    newFreq.SetParent(null);
-                    FreqsClipboard.Add(newFreq);
+                        //Unlink cloned Freq with old parent group
+                        newFreq.SetParent(null);
+                        FreqsClipboard.Add(newFreq);
+                    }
+                    return true;
                 }
-
-                RefreshDataGrid();
-            }
+                return false;
+            });
         }
 
-        private void MnuPaste_Click(object sender, RoutedEventArgs e)
+        private Task<bool> FreqsPasteAsync(FreqGroup newParent)
         {
-            if (FreqsClipboard != null && FreqsClipboard.Count > 0)
+            return Task.Factory.StartNew(() =>
             {
-                // Get selected FreqGroup
-                FreqGroup newParent = SelectedGroup;
-                if (newParent == null)
-                {
-                    System.Windows.MessageBox.Show("No group is selected to paste freqs");
-                    return;
+                if (FreqsClipboard != null && FreqsClipboard.Count > 0)
+                {                                        
+                    if (newParent == null)
+                    {
+                        System.Windows.MessageBox.Show("No group is selected to paste freqs");
+                        return false;
+                    }
+
+                    foreach (Freq freq in FreqsClipboard)
+                    {
+                        // Link with new parent group                     
+                        freq.SetParent(newParent);
+                        newParent.AddNewFreq(freq);
+                    }
+
+                    // Clear clipboard
+                    FreqsClipboard.Clear();
+                    FreqsClipboard = null;
+                    return true;                    
                 }
+                return false;
+            });
+        }
 
-                foreach (Freq freq in FreqsClipboard)
-                {
-                    // Link with new parent group                     
-                    freq.SetParent(newParent);
-                    newParent.AddNewFreq(freq);
-                }
+        private async void MnuCut_Click(object sender, RoutedEventArgs e)
+        {
+            List<Freq> selectedFreqs = GetSelectedFreqs();
+            bool status = await FreqsCutAsync(selectedFreqs);
+            if (status == true)
+                RefreshDataGrid();            
+        }
 
-                // Clear clipboard
-                FreqsClipboard.Clear();
-                FreqsClipboard = null;
+        private async void MnuCopy_Click(object sender, RoutedEventArgs e)
+        {
+            List<Freq> selectedFreqs = GetSelectedFreqs();
+            bool status = await FreqsCopyAsync(selectedFreqs);
+            if (status == true)
+                RefreshDataGrid();           
+        }
 
-                // Refresh DataGrid
+        private async void MnuPaste_Click(object sender, RoutedEventArgs e)
+        {
+            bool status = await FreqsPasteAsync(SelectedGroup);
+            if (status == true)
                 RefreshDataGrid();
-            }
         }
 
         private void MnuMain_ContextMenuOpening(object sender, ContextMenuEventArgs e)

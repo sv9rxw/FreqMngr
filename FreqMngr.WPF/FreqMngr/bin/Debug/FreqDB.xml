@@ -411,6 +411,278 @@
           </urls>
         </freq>
       </group>
+      <group name="Misc2" xmlns="MilGov">
+        <freq name="Mystic Star F435" frequency="3821" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F614" frequency="4488.8" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F463" frequency="4610" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F516" frequency="4645" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F877" frequency="4721" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F249" frequency="4731" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F058" frequency="4742" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F734" frequency="4757" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F988" frequency="4763" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F007" frequency="4850" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F555" frequency="4894" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F134" frequency="4942.5" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F197" frequency="4982" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F417" frequency="4992" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F452" frequency="5026" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F350" frequency="5043" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F803" frequency="5078" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F486" frequency="5152" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F248" frequency="5398" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F540" frequency="5404.5" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F497" frequency="5411" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F136" frequency="5429.5" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F542" frequency="5431" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F226" frequency="5435.5" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F489" frequency="5437" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F437" frequency="5684" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F809" frequency="5700" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F895" frequency="5710" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F622" frequency="5817" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+        <freq name="Mystic Star F731" frequency="6683" bandwidth="" modulation="USB" modulationtype="" protocol="Voice" country="USA" user="DISA, White House" coordinates="" xmlns="DISA Mystic Star">
+          <description>
+            The Mystic Star high-frequency single-side-band [SSB] communications system is installed at about 10-15 Air Force bases around the world, with remote transceivers controlled via telephone voice channels from Andrews AFB. This system is used for telephone traffic when Air Force One is out of range of other UHF links, but at least two SSB voice frequencies (and a full duplex 75 baud secure teletype channel called "India Oscar" which use a special anti-multipath modem) are maintained continuously and used for coordination of other communications links. Frequencies are chosen from a list of about 150 scattered throughout the available HF spectrum and are designated by "fox" code numbers which change from time to time.
+          </description>
+          <urls>
+            https://fas.org/nuke/guide/usa/c3i/mystic_star.htm
+            http://www.cryptome.org/2012-info/mystic-star/0083.htm
+          </urls>
+        </freq>
+      </group>
     </group>
   </group>
 </group>
