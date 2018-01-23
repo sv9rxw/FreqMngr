@@ -221,6 +221,46 @@ namespace FreqMngr
             return root;
         }
 
+        private Task<FreqGroup> ParseXMLAsync(XmlDocument doc, String xmlFilePath)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                FreqGroup root;
+
+                doc.Load(xmlFilePath);
+
+                XmlNodeList roots = doc.ChildNodes;
+                if (roots.Count != 2)
+                {
+                    System.Windows.MessageBox.Show("roots.count!=1 " + roots[0].Name);
+                    return null;
+                }
+
+                if (roots[0].Name != "xml")
+                {
+                    System.Windows.MessageBox.Show("Invalid XML file. Does not contain xml node");
+                    return null;
+                }
+
+                if (roots[1].Name != "group")
+                {
+                    System.Windows.MessageBox.Show("Invalid XML file. Does not contain root group node");
+                    return null;
+                }
+
+                XmlNode rootNode = roots[1];
+
+                //Special construction for root node
+                root = new FreqGroup(rootNode);
+
+                GetChildren(root);
+
+                Debug.WriteLine("Finished");
+
+                return root;
+            });
+        }
+
         private void GetChildren(FreqGroup parent)
         {
             XmlNodeList childrenNodeList = parent.XmlNode.ChildNodes;
@@ -273,24 +313,42 @@ namespace FreqMngr
         private TreeViewItem GetTreeViewItems(FreqGroup parent)
         {
             TreeViewItem result = null;
+            Application.Current.Dispatcher.Invoke((Action)delegate {
+                result = new TreeViewItem();
+                result.Header = parent.Name;
+                result.Tag = parent;
+                result.IsExpanded = true;
+            });
+            
 
-            result = new TreeViewItem();            
-            result.Header = parent.Name;
-            result.Tag = parent;
-            result.IsExpanded = true;
             this.AvailableGroups.Add(parent);
-            this.CmbGroup.Items.Add(parent);
-
-            if (parent.ChildGroups!=null)
+            Application.Current.Dispatcher.Invoke((Action)delegate
             {
-                foreach(FreqGroup group in parent.ChildGroups)
+                this.CmbGroup.Items.Add(parent);
+            });
+
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                if (parent.ChildGroups != null)
                 {
-                    TreeViewItem itemGroup = GetTreeViewItems(group);                    
-                    result.Items.Add(itemGroup);                                        
+                    foreach (FreqGroup group in parent.ChildGroups)
+                    {
+                        TreeViewItem itemGroup = GetTreeViewItems(group);
+                        result.Items.Add(itemGroup);
+                    }
                 }
-            }
+            });
                                     
             return result;
+        }
+
+        private Task<TreeViewItem> GetRootTreeViewItems()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                TreeViewItem rootItem = GetTreeViewItems(Root);
+                return rootItem;
+            });
         }
 
         public MainWindow()
@@ -303,22 +361,31 @@ namespace FreqMngr
             }
         }
 
-        private void WindowMain_Loaded(object sender, RoutedEventArgs e)
+        private async void WindowMain_Loaded(object sender, RoutedEventArgs e)
         {   
             // Parse XML and construct classes and chain the,      
-            Root = this.ParseXML(Doc, DbFilePath);
+            Root = await ParseXMLAsync(Doc, DbFilePath);
 
-
+            if (Root == null)
+            {
+                Debug.WriteLine("Error parsing XML file or loading entries");
+                return;
+            }
             //PrintFreqsTree(Root);
 
             // Get all FreqGroups and fill TreeView 
-            TreeViewItem rootItem = GetTreeViewItems(Root);
+
+            TreeViewItem rootItem = await GetRootTreeViewItems();
+            if (rootItem==null)
+            {
+                System.Windows.MessageBox.Show("Could not get TreeView items", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             this.TreeGroups.Items.Add(rootItem);
-            rootItem.IsExpanded = true;            
-            
+            rootItem.IsExpanded = true;
+
             // Set ItemsSource for DataGrid
-            this.DataGridFreqs.ItemsSource = Root.AllFreqs;
-            this.TxtEntriesCount.Text = Root.AllFreqs.Count.ToString();                     
+            RefreshDataGrid();            
+            //this.TxtEntriesCount.Text = Root.AllFreqs.Count.ToString();                     
         }
 
         #endregion
