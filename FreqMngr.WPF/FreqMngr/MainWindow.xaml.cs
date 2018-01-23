@@ -41,6 +41,8 @@ namespace FreqMngr
         private bool PnlEditModeAddMew = false;
         private List<FreqGroup> AvailableGroups = new List<FreqGroup>();
 
+        List<Freq> FreqsClipboard = null;
+
 
         public String[] Modulations { get; set; } = new string[] { Modulation.CW,
             Modulation.DSB,
@@ -59,7 +61,16 @@ namespace FreqMngr
             Modulation.WDM,
             Modulation.Unknown
         };
-        
+
+
+
+        private void ButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            Doc.Save(DbFilePath);
+        }
+
+        #region PnlEdit
+
         private void PnlEdit_Show()
         {
             this.ClmFreqs.Width = new GridLength(2.0, GridUnitType.Star);
@@ -72,6 +83,106 @@ namespace FreqMngr
             this.ClmEdit.Width = new GridLength(0.0, GridUnitType.Star);
         }
 
+        private void TxtFrequency_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("^[.][0-9]+$|^[0-9]*[.]{0,1}[0-9]*$");
+            e.Handled = !regex.IsMatch((sender as TextBox).Text.Insert((sender as TextBox).SelectionStart, e.Text));
+        }
+
+        private void TxtBandwidth_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("^[.][0-9]+$|^[0-9]*[.]{0,1}[0-9]*$");
+            e.Handled = !regex.IsMatch((sender as TextBox).Text.Insert((sender as TextBox).SelectionStart, e.Text));
+        }
+
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            PnlEdit_Hide();
+        }
+
+        private void BtnApply_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.PnlEditModeAddMew == true)
+            {
+                if (this.CmbGroup.SelectedItem == null)
+                {
+                    System.Windows.MessageBox.Show("Please, select a Group");
+                    return;
+                }
+
+                if (String.IsNullOrWhiteSpace(this.TxtName.Text) == true)
+                {
+                    System.Windows.MessageBox.Show("Please, enter a valid name");
+                    return;
+                }
+
+                if (String.IsNullOrWhiteSpace(this.TxtFrequency.Text) == true)
+                {
+                    System.Windows.MessageBox.Show("Please, enter a valid frequency");
+                    return;
+                }
+                double freqDouble;
+                try
+                {
+                    freqDouble = double.Parse(this.TxtFrequency.Text);
+                }
+                catch (Exception expt)
+                {
+                    System.Windows.MessageBox.Show("Please, enter a valid frequency: " + expt.Message);
+                    return;
+                }
+
+                if (String.IsNullOrWhiteSpace(this.TxtBandwidth.Text) == false)
+                {
+                    double bw;
+                    try
+                    {
+                        bw = double.Parse(this.TxtBandwidth.Text);
+                    }
+                    catch (Exception expt)
+                    {
+                        System.Windows.MessageBox.Show("Please, enter a valid bandwidth: " + expt.Message);
+                        return;
+                    }
+                }
+
+
+                // Construct a new XML node for the new Freq           
+                FreqGroup group = this.CmbGroup.SelectedItem as FreqGroup;
+
+                Freq freq = new Freq(Doc,
+                    group,
+                    this.TxtName.Text,
+                    this.TxtFrequency.Text,
+                    this.TxtBandwidth.Text,
+                    (String)this.CmbModulation.SelectedItem,
+                    this.TxtModulationType.Text,
+                    this.TxtProtocol.Text,
+                    this.TxtCountry.Text,
+                    this.TxtUser.Text,
+                    this.TxtCoordinates.Text,
+                    this.TxtDescription.Text,
+                    this.TxtURLs.Text);
+
+                group.AddNewFreq(freq);
+
+                PnlEdit_Hide();
+
+                if (TreeGroups.SelectedItem is TreeViewItem)
+                {
+                    TreeViewItem item = TreeGroups.SelectedItem as TreeViewItem;
+                    this.DataGridFreqs.ItemsSource = ((FreqGroup)item.Tag).AllFreqs;
+                }
+            }
+            else
+            {
+
+            }
+        }
+
+        #endregion
+
+        #region Loading Methods
         private FreqGroup ParseXML(XmlDocument doc, String xmlFilePath)
         {
             FreqGroup root;
@@ -209,23 +320,26 @@ namespace FreqMngr
             this.TxtEntriesCount.Text = Root.AllFreqs.Count.ToString();                     
         }
 
-        private void ButtonTest_Click(object sender, RoutedEventArgs e)
-        {            
-            this.DataGridFreqs.ItemsSource = Root.ChildGroups[0].ChildGroups[0].AllFreqs;
-        }
+        #endregion
 
-        private void TreeGroups_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {            
-            if (TreeGroups.SelectedItem is TreeViewItem)
-            {
-                TreeViewItem item = TreeGroups.SelectedItem as TreeViewItem;                                
-                this.DataGridFreqs.ItemsSource = ((FreqGroup)item.Tag).AllFreqs;
-            }
-        }
+        #region DataGridFreqs Stuff
 
-        private void ButtonSave_Click(object sender, RoutedEventArgs e)
+        private List<Freq> GetSelectedFreqs()
         {
-            Doc.Save(DbFilePath);
+            List<Freq> selectedFreqs = new List<Freq>();
+            var items = this.DataGridFreqs.SelectedItems;
+            if (items != null)
+            {
+                foreach (var item in items)
+                {
+                    if (item is Freq)
+                    {
+                        Freq freq = item as Freq;
+                        selectedFreqs.Add(freq);
+                    }
+                }
+            }
+            return selectedFreqs;
         }
 
         private void DataGridFreqs_SelectionChanged(object sender, DataGridSelectionChangedEventArgs e)
@@ -284,91 +398,6 @@ namespace FreqMngr
             }
         }
 
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            PnlEdit_Hide();
-        }
-
-        private void BtnApply_Click(object sender, RoutedEventArgs e)
-        {
-            if(this.PnlEditModeAddMew==true)
-            {
-                if (this.CmbGroup.SelectedItem == null)
-                {
-                    System.Windows.MessageBox.Show("Please, select a Group");
-                    return;
-                }
-
-                if (String.IsNullOrWhiteSpace(this.TxtName.Text) == true)
-                {
-                    System.Windows.MessageBox.Show("Please, enter a valid name");
-                    return;
-                }
-
-                if (String.IsNullOrWhiteSpace(this.TxtFrequency.Text)==true)
-                {
-                    System.Windows.MessageBox.Show("Please, enter a valid frequency");
-                    return;
-                }
-                double freqDouble;
-                try
-                {
-                    freqDouble = double.Parse(this.TxtFrequency.Text);
-                }
-                catch (Exception expt)
-                {
-                    System.Windows.MessageBox.Show("Please, enter a valid frequency: " + expt.Message);
-                    return;
-                }
-
-                if (String.IsNullOrWhiteSpace(this.TxtBandwidth.Text) == false)
-                {
-                    double bw;
-                    try
-                    {
-                        bw = double.Parse(this.TxtBandwidth.Text);
-                    }
-                    catch (Exception expt)
-                    {
-                        System.Windows.MessageBox.Show("Please, enter a valid bandwidth: " + expt.Message);
-                        return;
-                    }
-                }
-
-
-                // Construct a new XML node for the new Freq           
-                FreqGroup group = this.CmbGroup.SelectedItem as FreqGroup;
-
-                Freq freq = new Freq(Doc,
-                    group,
-                    this.TxtName.Text,
-                    this.TxtFrequency.Text,
-                    this.TxtBandwidth.Text,
-                    (String)this.CmbModulation.SelectedItem,
-                    this.TxtModulationType.Text,
-                    this.TxtProtocol.Text,
-                    this.TxtCountry.Text,
-                    this.TxtUser.Text,
-                    this.TxtCoordinates.Text,
-                    this.TxtDescription.Text,
-                    this.TxtURLs.Text);
-                                               
-                group.AddNewFreq(freq);
-
-                PnlEdit_Hide();
-                
-                if (TreeGroups.SelectedItem is TreeViewItem)
-                {
-                    TreeViewItem item = TreeGroups.SelectedItem as TreeViewItem;
-                    this.DataGridFreqs.ItemsSource = ((FreqGroup)item.Tag).AllFreqs;
-                }
-            }
-            else
-            {
-
-            }
-        }
-
         private void MnuEdit_Click(object sender, RoutedEventArgs e)
         {
             this.PnlEditModeAddMew = false;
@@ -398,102 +427,7 @@ namespace FreqMngr
                     this.TxtURLs.Text = freq.URLs;
                 }
             }
-        }
-
-        private void TxtFrequency_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            Regex regex = new Regex("^[.][0-9]+$|^[0-9]*[.]{0,1}[0-9]*$");
-            e.Handled = !regex.IsMatch((sender as TextBox).Text.Insert((sender as TextBox).SelectionStart, e.Text));
-        }
-
-        private void TxtBandwidth_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            Regex regex = new Regex("^[.][0-9]+$|^[0-9]*[.]{0,1}[0-9]*$");
-            e.Handled = !regex.IsMatch((sender as TextBox).Text.Insert((sender as TextBox).SelectionStart, e.Text));
-        }
-
-        private void ChkCellQSL_Checked(object sender, RoutedEventArgs e)
-        {
-            if (sender!=null)
-            {
-                if (sender is DataGridRow)
-                {
-                    System.Windows.MessageBox.Show("aaaa");
-                }
-            }
-        }
-
-
-        private void MnuGroupsNew_Click(object sender, RoutedEventArgs e)
-        {
-            object selectedItem = TreeGroups.SelectedItem;
-            if (selectedItem is TreeViewItem)
-            {
-                TreeViewItem item = selectedItem as TreeViewItem;
-                FreqGroup parent = (FreqGroup)item.Tag;
-
-                InputDialog inputDialog = new InputDialog("New group name: ", String.Empty);
-                if (inputDialog.ShowDialog() == true)
-                {                    
-                    String groupName = inputDialog.Answer;
-                                     
-                    if (String.IsNullOrWhiteSpace(groupName) == true)
-                    {
-                        System.Windows.MessageBox.Show("Invalid group name");
-                        return;
-                    }
-                    FreqGroup newGroup = new FreqGroup(Doc, parent, groupName);
-
-                    parent.AddNewGroup(newGroup);
-                    
-                    this.DataGridFreqs.ItemsSource = parent.AllFreqs;
-                    TreeViewItem treeViewItem = GetTreeViewItems(Root);
-                    this.TreeGroups.Items.Clear();
-                    this.TreeGroups.Items.Add(treeViewItem);                    
-                    treeViewItem.IsExpanded = true;             
-                 
-                }
-            }
-        }
-        private void RefreshDataGrid()
-        {
-            FreqGroup selectedGroup = GetSelectedGroup();
-            if (selectedGroup == null)
-                DataGridFreqs.ItemsSource = Root.AllFreqs;
-            else
-                DataGridFreqs.ItemsSource = selectedGroup.AllFreqs;
-        }
-
-        private FreqGroup GetSelectedGroup()
-        {
-            if (this.TreeGroups.SelectedItem != null)
-            {
-                TreeViewItem groupObj = this.TreeGroups.SelectedItem as TreeViewItem;
-                if (groupObj.Tag != null)
-                    return (groupObj.Tag as FreqGroup);
-            }
-            return null;
-        }
-
-        private List<Freq> GetSelectedFreqs()
-        {
-            List<Freq> selectedFreqs = new List<Freq>();
-            var items = this.DataGridFreqs.SelectedItems;
-            if (items != null)
-            {
-                foreach (var item in items)
-                {
-                    if (item is Freq)
-                    {
-                        Freq freq = item as Freq;
-                        selectedFreqs.Add(freq);
-                    }
-                }
-            }
-            return selectedFreqs;
-        }
-
-        List<Freq> FreqsClipboard = null;
+        }        
 
         private void MnuCut_Click(object sender, RoutedEventArgs e)
         {
@@ -509,14 +443,14 @@ namespace FreqMngr
                     parentGroup.RemoveFreq(freq);
 
                     //Unlink freq with previous parent group
-                    freq.SetParent(null);                   
+                    freq.SetParent(null);
 
                     //Add to clipboard
                     FreqsClipboard.Add(freq);
                 }
 
                 RefreshDataGrid();
-            }                              
+            }
         }
 
         private void MnuCopy_Click(object sender, RoutedEventArgs e)
@@ -540,26 +474,26 @@ namespace FreqMngr
         }
 
         private void MnuPaste_Click(object sender, RoutedEventArgs e)
-        {            
-            if (FreqsClipboard!=null && FreqsClipboard.Count>0)
+        {
+            if (FreqsClipboard != null && FreqsClipboard.Count > 0)
             {
                 // Get selected FreqGroup
-                FreqGroup newParent = GetSelectedGroup();                
-                if (newParent==null)
+                FreqGroup newParent = GetSelectedGroup();
+                if (newParent == null)
                 {
                     System.Windows.MessageBox.Show("No group is selected to paste freqs");
                     return;
                 }
 
-                foreach(Freq freq in FreqsClipboard)
-                {                  
+                foreach (Freq freq in FreqsClipboard)
+                {
                     // Link with new parent group                     
                     freq.SetParent(newParent);
-                    newParent.AddNewFreq(freq);                                            
+                    newParent.AddNewFreq(freq);
                 }
 
                 // Clear clipboard
-                FreqsClipboard.Clear();                
+                FreqsClipboard.Clear();
                 FreqsClipboard = null;
 
                 // Refresh DataGrid
@@ -570,7 +504,7 @@ namespace FreqMngr
         private void MnuMain_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             List<Freq> selectedFreqs = GetSelectedFreqs();
-            if (selectedFreqs==null || selectedFreqs.Count==0)
+            if (selectedFreqs == null || selectedFreqs.Count == 0)
             {
                 this.MnuCut.IsEnabled = false;
                 this.MnuCopy.IsEnabled = false;
@@ -579,6 +513,62 @@ namespace FreqMngr
             {
                 this.MnuCut.IsEnabled = true;
                 this.MnuCopy.IsEnabled = true;
+            }
+        }
+
+        private void RefreshDataGrid()
+        {
+            FreqGroup selectedGroup = GetSelectedGroup();
+            if (selectedGroup == null)
+                DataGridFreqs.ItemsSource = Root.AllFreqs;
+            else
+                DataGridFreqs.ItemsSource = selectedGroup.AllFreqs;
+        }
+
+        #endregion
+
+        #region TreeGroups Stuff
+
+        private FreqGroup GetSelectedGroup()
+        {
+            if (this.TreeGroups.SelectedItem != null)
+            {
+                TreeViewItem groupObj = this.TreeGroups.SelectedItem as TreeViewItem;
+                if (groupObj.Tag != null)
+                    return (groupObj.Tag as FreqGroup);
+            }
+            return null;
+        }
+
+        private void MnuGroupsNew_Click(object sender, RoutedEventArgs e)
+        {
+            object selectedItem = TreeGroups.SelectedItem;
+            if (selectedItem is TreeViewItem)
+            {
+                TreeViewItem item = selectedItem as TreeViewItem;
+                FreqGroup parent = (FreqGroup)item.Tag;
+
+                InputDialog inputDialog = new InputDialog("New group name: ", String.Empty);
+                if (inputDialog.ShowDialog() == true)
+                {
+                    String groupName = inputDialog.Answer;
+
+                    if (String.IsNullOrWhiteSpace(groupName) == true)
+                    {
+                        System.Windows.MessageBox.Show("Invalid group name");
+                        return;
+                    }
+                    FreqGroup newGroup = new FreqGroup(Doc, parent, groupName);
+
+                    parent.AddNewGroup(newGroup);
+
+                    this.DataGridFreqs.ItemsSource = parent.AllFreqs;
+                    TreeViewItem treeViewItem = GetTreeViewItems(Root);
+                    this.TreeGroups.Items.Clear();
+                    this.TreeGroups.Items.Add(treeViewItem);
+                    treeViewItem.IsExpanded = true;
+
+                }
             }
         }
 
@@ -598,5 +588,16 @@ namespace FreqMngr
                 this.MnuGroupsDelete.IsEnabled = true;
             }
         }
+
+        private void TreeGroups_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (TreeGroups.SelectedItem is TreeViewItem)
+            {
+                TreeViewItem item = TreeGroups.SelectedItem as TreeViewItem;
+                this.DataGridFreqs.ItemsSource = ((FreqGroup)item.Tag).AllFreqs;
+            }
+        }
+
+        #endregion
     }
 }
