@@ -42,6 +42,7 @@ namespace FreqMngr
         private List<FreqGroup> AvailableGroups = new List<FreqGroup>();
 
         List<Freq> FreqsClipboard = null;
+        FreqGroup SelectedGroup = null;
 
 
         public String[] Modulations { get; set; } = new string[] { Modulation.CW,
@@ -478,7 +479,7 @@ namespace FreqMngr
             if (FreqsClipboard != null && FreqsClipboard.Count > 0)
             {
                 // Get selected FreqGroup
-                FreqGroup newParent = GetSelectedGroup();
+                FreqGroup newParent = SelectedGroup;
                 if (newParent == null)
                 {
                     System.Windows.MessageBox.Show("No group is selected to paste freqs");
@@ -517,28 +518,16 @@ namespace FreqMngr
         }
 
         private void RefreshDataGrid()
-        {
-            FreqGroup selectedGroup = GetSelectedGroup();
-            if (selectedGroup == null)
+        {            
+            if (SelectedGroup == null)
                 DataGridFreqs.ItemsSource = Root.AllFreqs;
             else
-                DataGridFreqs.ItemsSource = selectedGroup.AllFreqs;
+                DataGridFreqs.ItemsSource = SelectedGroup.AllFreqs;
         }
 
         #endregion
 
         #region TreeGroups Stuff
-
-        private FreqGroup GetSelectedGroup()
-        {
-            if (this.TreeGroups.SelectedItem != null)
-            {
-                TreeViewItem groupObj = this.TreeGroups.SelectedItem as TreeViewItem;
-                if (groupObj.Tag != null)
-                    return (groupObj.Tag as FreqGroup);
-            }
-            return null;
-        }
 
         private void MnuGroupsNew_Click(object sender, RoutedEventArgs e)
         {
@@ -574,7 +563,7 @@ namespace FreqMngr
 
         private void TreeGroups_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            FreqGroup selectedGroup = GetSelectedGroup();
+            FreqGroup selectedGroup = SelectedGroup;
             if (selectedGroup==null)
             {
                 this.MnuGroupsNew.IsEnabled = false;
@@ -592,9 +581,9 @@ namespace FreqMngr
         private void TreeGroups_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (TreeGroups.SelectedItem is TreeViewItem)
-            {
-                TreeViewItem item = TreeGroups.SelectedItem as TreeViewItem;
-                this.DataGridFreqs.ItemsSource = ((FreqGroup)item.Tag).AllFreqs;
+            {                
+                SelectedGroup = (TreeGroups.SelectedItem as TreeViewItem).Tag as FreqGroup;
+                RefreshDataGrid();
             }
         }
 
