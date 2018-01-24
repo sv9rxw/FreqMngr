@@ -20,6 +20,7 @@ namespace FreqMngr.Models
             }
         }
 
+
         private Group _Parent = null;
         public Group Parent
         {
@@ -60,6 +61,7 @@ namespace FreqMngr.Models
 
 
         public Group(String name)
+            : this()
         {
             if (String.IsNullOrWhiteSpace(name)) throw new ArgumentException("name");
             _Name = name;
@@ -78,9 +80,14 @@ namespace FreqMngr.Models
             _Parent = parent;
         }
 
+        public Group()
+        {
+            this._Children = new ObservableCollection<Group>();
+        }
+
         private ObservableCollection<Group> _Children = null;
 
-        private ObservableCollection<Group> Children       
+        public ObservableCollection<Group> Children       
         {
             get
             {
