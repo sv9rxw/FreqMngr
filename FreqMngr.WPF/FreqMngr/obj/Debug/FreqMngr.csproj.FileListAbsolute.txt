@@ -18,25 +18,3 @@ D:\ham\sw\FreqMngr.WPF\FreqMngr\obj\Debug\FrequencyBox.g.cs
 D:\ham\sw\FreqMngr.WPF\FreqMngr\obj\Debug\FrequencyBox.baml
 D:\ham\sw\FreqMngr.WPF\FreqMngr\obj\Debug\InputDialog.g.cs
 D:\ham\sw\FreqMngr.WPF\FreqMngr\obj\Debug\InputDialog.baml
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\bin\Debug\FreqMngr.exe.config
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\bin\Debug\FreqMngr.exe
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\bin\Debug\FreqMngr.pdb
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\bin\Debug\Xceed.Wpf.DataGrid.dll
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\bin\Debug\Xceed.Wpf.Toolkit.dll
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\InputDialog.g.cs
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\MainWindow.g.cs
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\App.g.cs
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\FreqMngr_MarkupCompile.cache
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\FreqMngr_MarkupCompile.lref
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\InputDialog.baml
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\MainWindow.baml
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\FreqMngr.g.resources
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\FreqMngr.Properties.Resources.resources
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\FreqMngr.csproj.GenerateResource.Cache
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\FreqMngr.exe
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\FreqMngr.pdb
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\FreqMngr_Content.g.cs
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\bin\Debug\FreqDB.mdf
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\bin\Debug\FreqDB_log.ldf
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\GeneratedInternalTypeHelper.g.cs
-C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\obj\Debug\FreqMngr.csprojResolveAssemblyReference.cache
