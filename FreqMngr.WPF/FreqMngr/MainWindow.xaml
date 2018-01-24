@@ -1,229 +1,33 @@
-﻿<Window x:Class="FreqMngr.MainWindow" Name="WindowMain"
+﻿<Window x:Class="FreqMngr.MainWindow" 
+        x:Name="WindowMain"                   
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:s="clr-namespace:System;assembly=mscorlib"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FreqMngr"           
-        xmlns:model="clr-namespace:FreqMngr.ViewModels"        
+        xmlns:local="clr-namespace:FreqMngr"                   
+        xmlns:ViewModels="clr-namespace:FreqMngr.ViewModels"        
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"        
-        xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"        
+        xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"               
         mc:Ignorable="d"
-        Title="FreqMngr" Height="800" Width="1024" Loaded="WindowMain_Loaded">
-
+        Title="FreqMngr" Height="800" Width="1024">
     <Window.Resources>
-        <DataTemplate x:Key="frequencyDataTemplate">
-            <Grid MaxHeight="30"
-               VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="1"
-                        Orientation="Horizontal"
-                        VerticalAlignment="Center">
-                    <TextBox Text="{Binding Path=. }" Width="200"></TextBox>
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
-
-
-        <DataTemplate x:Key="QSLDataTemplate">
-            <Grid MaxHeight="30"
-               VerticalAlignment="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <CheckBox IsChecked="{Binding Path=.}" />
-            </Grid>
-        </DataTemplate>
-
-        <Storyboard x:Key="SbShowNewFreq" >
-            <ThicknessAnimation Storyboard.TargetProperty="Width" From="00" To="300" DecelerationRatio=".9" Duration="0:0:3" />
-        </Storyboard>
-        <Storyboard x:Key="SbHideNewFreq">
-            <ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,0,0,0" To="-200,0,0,0" AccelerationRatio=".9" Duration="0:1:3" />
-        </Storyboard>
+        <ViewModels:MainWindowViewModel x:Key="MainWindowViewModelDataSource" d:IsDataSource="True"/>
     </Window.Resources>
 
-
-
-
-    <DockPanel x:Name="DockPanelMain">
-        <Menu DockPanel.Dock="Top">
-            <!--
-            <MenuItem Header="_File">
-                <MenuItem x:Name="MenuMainOpenSession" Header="Open Session" Click="MenuMainOpenSession_Click"/>
-                <Separator />
-                <MenuItem Header="_Exit" />
-            </MenuItem>
-            -->
-        </Menu>
-        
-        <ToolBarTray x:Name="ToolBarTrayMain" DockPanel.Dock="Top" VerticalAlignment="Center">
-            <ToolBar x:Name="ToolBarMain" VerticalAlignment="Center">
-                <Button x:Name="ButtonSave" Click="ButtonSave_Click">
-                    <Image Source="Resources/Save_16x.png" />
-                </Button>
-                <TextBlock x:Name="TxtEntriesCount" ></TextBlock>                
-            </ToolBar>
-        </ToolBarTray>
-
-        <Grid>
-            <Grid.Resources>
-                <xcdg:DataGridCollectionViewSource x:Key="ViewSourceFreqs"
-                                            Source="{Binding ElementName=WindowMain, Path=Freqs}">
-                    <xcdg:DataGridCollectionViewSource.GroupDescriptions>
-                        <PropertyGroupDescription PropertyName="Country" />
-                        <PropertyGroupDescription PropertyName="Modulation" />
-                    </xcdg:DataGridCollectionViewSource.GroupDescriptions>
-                </xcdg:DataGridCollectionViewSource>
-            </Grid.Resources>
-            
+    <DockPanel x:Name="PnlMain" DataContext="{Binding Source={StaticResource MainWindowViewModelDataSource}}" >
+        <ToolBar x:Name="BarMain" DockPanel.Dock="Top"/>
+        <Grid x:Name="GridMain" DockPanel.Dock="Bottom" Width="1020">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="ClmGroups" Width="*" />
-                <ColumnDefinition x:Name="ClmFreqs"  Width="3*" />
-                <ColumnDefinition x:Name="ClmEdit" Width="0" />
+                <ColumnDefinition x:Name="ClmGroups"/>
+                <ColumnDefinition x:Name="ClmFreqs" Width="3*"/>
+                <ColumnDefinition x:Name="ClmEdit" Width="2*"/>
             </Grid.ColumnDefinitions>
-
-            <TreeView x:Name="TreeGroups" Grid.Column="0" SelectedItemChanged="TreeGroups_SelectedItemChanged" ContextMenuOpening="TreeGroups_ContextMenuOpening">
-                <TreeView.ContextMenu>
-                    <ContextMenu x:Name="MnuGroups">
-                        <MenuItem x:Name="MnuGroupsNew" Header="New" Click="MnuGroupsNew_Click"></MenuItem>
-                        <MenuItem x:Name="MnuGroupsRename" Header="Rename"></MenuItem>
-                        <Separator />
-                        <MenuItem x:Name="MnuGroupsDelete" Header="Delete"></MenuItem>
-                    </ContextMenu>
-                </TreeView.ContextMenu>
-            </TreeView>
-
-
-            <xcdg:DataGridControl x:Name="DataGridFreqs" Grid.Column="1"
-                            ItemsSource="{Binding Source={StaticResource ViewSourceFreqs} }" 
-                                  SelectionChanged="DataGridFreqs_SelectionChanged" 
-                                  TextInput="DataGridFreqs_TextInput" >
-                
-
-                <xcdg:DataGridControl.ContextMenu>
-                    <ContextMenu Name="MnuMain" ContextMenuOpening="MnuMain_ContextMenuOpening">
-                        <MenuItem x:Name="MnuNew" Header="New" Click="MnuNew_Click"></MenuItem>
-                        <MenuItem x:Name="MnuEdit" Header="Edit" Click="MnuEdit_Click" ></MenuItem>
-                        <Separator/>
-                        <MenuItem x:Name="MnuCut" Header="Cut" Click="MnuCut_Click"></MenuItem>
-                        <MenuItem x:Name="MnuCopy" Header="Copy" Click="MnuCopy_Click"></MenuItem>
-                        <MenuItem x:Name="MnuPaste" Header="Paste" Click="MnuPaste_Click"></MenuItem>
-                        <Separator />
-                        <MenuItem x:Name="MnuDelete" Header="Delete" Click="MnuDelete_Click"></MenuItem>
-                    </ContextMenu>
-                </xcdg:DataGridControl.ContextMenu>                   
-                <!--
-                <xcdg:DataGridControl.Resources>
-                    <Style x:Key="FrequencyViewerStyle" TargetType="TextBox">
-                        <Setter Property="TextOptions."
-                        </Style>
-                </xcdg:DataGridControl.Resources>
-                -->
+            <xcdg:DataGridControl x:Name="DataGridFreqs" Grid.Column="1" ItemsSource="{Binding Freqs}">
                 <xcdg:DataGridControl.View>
                     <xcdg:TableflowView FixedColumnCount="1" />
                 </xcdg:DataGridControl.View>
-
-                <xcdg:DataGridControl.Columns>
-                    <!--Preconfigure the OrderID Column of the grid with CellValidationRule. -->
-                    <xcdg:Column FieldName="Frequency" Title="Frequency (kHz)" IsMainColumn="True" >                                 
-                                 <!-- CellContentTemplate="{StaticResource frequencyDataTemplate}" --> 
-                        
-                    </xcdg:Column>
-                    <xcdg:Column FieldName="Name" Title="Name"></xcdg:Column>
-                    <xcdg:Column FieldName="Modulation" Title="Modulation">
-                        <xcdg:Column.CellEditor>
-                            <xcdg:CellEditor>
-                                <xcdg:CellEditor.EditTemplate>
-                                    <DataTemplate>
-                                        <ComboBox 
-                                          ItemsSource="{Binding Path=Modulations, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                          SelectedValue="{xcdg:CellEditorBinding}" IsEditable="True" Foreground="Black" IsSynchronizedWithCurrentItem="True" />
-                                    </DataTemplate>
-                                </xcdg:CellEditor.EditTemplate>
-                            </xcdg:CellEditor>
-                        </xcdg:Column.CellEditor>                        
-                    </xcdg:Column>
-                    <xcdg:Column FieldName="ModulationType" Title="Mod Type"></xcdg:Column>
-                    <xcdg:Column FieldName="Bandwidth" Title="Bandwidth (kHz)" ></xcdg:Column>
-                    <xcdg:Column FieldName="Protocol" Title="Protocol" ></xcdg:Column>
-                    <!-- <xcdg:Column FieldName="QSL" Title="QSL" CellContentTemplate="{StaticResource QSLDataTemplate}"></xcdg:Column> -->
-                    <xcdg:Column FieldName="QSL" Title="QSL" CellEditorDisplayConditions="Always">
-
-                    </xcdg:Column>
-                </xcdg:DataGridControl.Columns>
             </xcdg:DataGridControl>
-            
-            <StackPanel Grid.Column="2" Name="PnlEdit" Margin="10,10,10,10" >
-                <TextBlock x:Name="LblTitle" Text="Add new frequency" FontSize="15" />
-                <Grid Margin="0,20,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0">
-                        <TextBlock Text="Frequency (kHz): "></TextBlock>
-                        <TextBox x:Name="TxtFrequency" Width="150" HorizontalAlignment="Left" PreviewTextInput="TxtFrequency_PreviewTextInput"></TextBox>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1">
-                        <TextBlock Text="Bandwidth (kHz): "></TextBlock>
-                        <TextBox x:Name="TxtBandwidth" Width="150" HorizontalAlignment="Left" PreviewTextInput="TxtBandwidth_PreviewTextInput"></TextBox>
-                    </StackPanel>
-                </Grid>
-                <TextBlock Text="Name: "></TextBlock>
-                <TextBox x:Name="TxtName"></TextBox>
-                <TextBlock Text="Group: "></TextBlock>
-                <ComboBox x:Name="CmbGroup" />
-
-                <Grid Margin="0,20,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Margin="0,0,0,10">
-                        <TextBlock Text="Modulation: "></TextBlock>
-                        <ComboBox x:Name="CmbModulation" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                        <TextBlock Text="Modulation Type: "></TextBlock>
-                        <TextBox x:Name="TxtModulationType"></TextBox>
-                    </StackPanel>
-                </Grid>
-                <TextBlock Text="Protocol: "></TextBlock>
-                <TextBox x:Name="TxtProtocol"></TextBox>
-                
-                <TextBlock Text="Country: " Margin="0,20,0,0"></TextBlock>
-                <TextBox x:Name="TxtCountry"></TextBox>
-                <TextBlock Text="User: "></TextBlock>
-                <TextBox x:Name="TxtUser"></TextBox>
-
-                <TextBlock Text="Coordinates (Lat Lon): " Grid.Column="0"></TextBlock>
-                <TextBox x:Name="TxtCoordinates" Grid.Column="1" ></TextBox>
-
-                <TextBlock Text="Description: " ></TextBlock>
-                <TextBox x:Name="TxtDescription" Height="100" TextWrapping="Wrap" AcceptsReturn="True"></TextBox>
-                <TextBlock Text="Reference URLs: "></TextBlock>
-                <TextBox x:Name="TxtURLs" Height="100" TextWrapping="Wrap" AcceptsReturn="True"></TextBox>
-
-                <CheckBox x:Name="ChkQSL" Content="QSL?" IsChecked="False" Margin="0,20,0,0"></CheckBox>
-                <Grid Margin="0,30,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="BtnApply" Content="_Apply" Grid.Column="0" Width="60" Click="BtnApply_Click"/>
-                    <Button x:Name="BtnCancel" Content="_Cancel" Grid.Column="1" Width="60" Click="BtnCancel_Click"/>
-                </Grid>
-            </StackPanel>
-
-            <xctk:BusyIndicator x:Name="BusyIndicator" IsBusy="False" Grid.Column="0" >
-                <!-- <ContentControl Style="{StaticResource SampleContent}"/> -->
-            </xctk:BusyIndicator>
-        </Grid>            
-
+        </Grid>
     </DockPanel>
 </Window>
