@@ -10,6 +10,7 @@ using System.Diagnostics;
 
 using FreqMngr.Models;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace FreqMngr.Services
 {
@@ -59,16 +60,15 @@ namespace FreqMngr.Services
 
             return true;
         }
-
         
-        public IEnumerable<Group> GetAllGroups()
+        public List<Group> GetAllGroups()
         {
             if (_Connected == false) throw new Exception("Not connected to any database");
 
             SqlCommand cmd = new SqlCommand("select * from TableGroups", _SqlConnection);
             SqlDataReader reader = cmd.ExecuteReader();
 
-            ObservableCollection<Group> groupList = new ObservableCollection<Group>();
+            List<Group> groupList = new List<Group>();
             while (reader.Read())
             {
                 int groupId = (int)reader[TABLEGROUPS_CLM_ID];
@@ -87,12 +87,12 @@ namespace FreqMngr.Services
             if (_Connected==false) throw new Exception("Not connected to any database");
             Group root = null;
 
-            IEnumerable<Group> allGroupsList = GetAllGroups();            
+            List<Group> allGroupsList = GetAllGroups();            
                                                             
             return root;
         }
         
-        private void LoadFreqs(ObservableCollection<Freq> list, Group group)
+        private void LoadFreqs(List<Freq> list, Group group)
         {
             if (_Connected == false) throw new Exception("Not connected to any database");
 
@@ -129,24 +129,10 @@ namespace FreqMngr.Services
             }
         }            
         
-        public IEnumerable<Freq> GetFreqs(Group group)
+        public List<Freq> GetFreqs(Group group)
         {            
-            ObservableCollection<Freq> freqList = new ObservableCollection<Freq>();
-            //Load frequencies of this group and its children recursively
-            LoadFreqs(freqList, group);         
-            return freqList;
-        }
-
-        public void FillFreqs(ObservableCollection<Freq> list, Group group)
-        {
-            if (list == null)
-                throw new NullReferenceException(nameof(FillFreqs) + ":list");
-
-            if (group == null)
-                return;
-
-            if (_Connected == false)
-                throw new Exception("Not connected to any database");
+            List<Freq> freqList = new List<Freq>();
+            if (_Connected == false) throw new Exception("Not connected to any database");
 
             SqlCommand cmd = new SqlCommand("select * from TableFreqs where ParentId = '" + group.Id + "'", _SqlConnection);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -168,13 +154,15 @@ namespace FreqMngr.Services
                     Modulation = freqModulation
                 };
 
-                list.Add(freq);
+                freqList.Add(freq);
 
                 Debug.WriteLine("Found: " + freqId.ToString() + ", " + freqName);
             }
 
             reader.Close();
+            return freqList;
         }
+
 
         private void LoadChildren(IEnumerable<Group> groupList, Group parent)
         {
@@ -189,11 +177,11 @@ namespace FreqMngr.Services
             }
         }
 
-        public IEnumerable<Group> GetGroupsTree()
+        public List<Group> GetGroupsTree()
         {
-            IEnumerable<Group> groupList = GetAllGroups();
+            List<Group> groupList = GetAllGroups();
 
-            ObservableCollection<Group> groupTree = new ObservableCollection<Group>();
+            List<Group> groupTree = new List<Group>();
                       
             // Get root group
             foreach(Group group in groupList)
@@ -205,8 +193,17 @@ namespace FreqMngr.Services
                     LoadChildren(groupList, group);
                 }
             }            
-
             return groupTree;
         }
+
+        public Task<List<Group>> GetGroupsTreeAsync()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                List<Group> result = GetGroupsTree();                
+                return result;
+            });
+        }
+
     }
 }

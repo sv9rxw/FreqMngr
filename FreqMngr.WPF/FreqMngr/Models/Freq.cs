@@ -28,20 +28,53 @@ namespace FreqMngr.Models
         private String _Name;
         public String Name
         {
-            get; set;
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                if (value == _Name)
+                    return;
+                _Name = value;
+                OnPropertyChanged(nameof(Name));
+            }
         }
 
         private double FrequencyInKHz { get; set; }
 
+        private String _Frequency = String.Empty;
         public String Frequency
         {
-            get; set;
+            get
+            {
+                return _Frequency;
+            }
+            set
+            {
+                if (value == _Frequency)
+                    return;
+                _Frequency = value;
+                OnPropertyChanged(nameof(Frequency));
+            }
         }
 
         private double BandwidthInKHz { get; set; }
+
+        private String _Bandwidth;
         public String Bandwidth
         {
-            get; set;
+            get
+            {
+                return _Bandwidth;
+            }
+            set
+            {
+                if (value == _Bandwidth)
+                    return;
+                _Bandwidth = value;
+                OnPropertyChanged(nameof(Bandwidth));
+            }
         }
         
         public String Modulation
@@ -100,8 +133,6 @@ namespace FreqMngr.Models
 
         public Freq()
         {
-
-
             this.NumberFormat = new NumberFormatInfo();
             this.NumberFormat.NumberDecimalSeparator = ".";
             this.NumberFormat.NumberGroupSeparator = ",";

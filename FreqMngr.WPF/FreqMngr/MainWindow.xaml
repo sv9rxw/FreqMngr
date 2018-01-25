@@ -21,15 +21,17 @@
 
     <DockPanel x:Name="PnlMain" DataContext="{Binding Source={StaticResource MainWindowViewModelDataSource}}" >
         <ToolBar x:Name="BarMain" DockPanel.Dock="Top">
-            <Button x:Name="BtnLoad">
-                
+
+            <Button x:Name="BtnLoad" Grid.Column="0" ToolTip="Load frequency database"
+                    Command="{Binding LoadDatabaseCommand}">
+                <Image Width="16" Source="Resources/Database_16x.png" ></Image>
             </Button>
-            <Button x:Name="BtnSave" >
+            <Button x:Name="BtnSave" Grid.Column="0" ToolTip="Save changes to database">
                 <Image Width="16" Source="Resources/Save_16x.png" ></Image>
             </Button>
-            <!--
-            <TextBlock x:Name="TxtSelectedGroup" TextWrapping="Wrap" Text="{Binding ActiveGroup}" Width="100"/>
-            -->
+
+            <TextBlock Text="Showing group: " Margin="50,0,0,0" VerticalAlignment="Center"/>
+            <TextBlock x:Name="TxtSelectedGroup" Margin="30,0,0,0" VerticalAlignment="Center" Text="{Binding ActiveGroup.Name}" Width="200" FontSize="14" FontWeight="SemiBold"/>
         </ToolBar>
         <Grid x:Name="GridMain" DockPanel.Dock="Bottom">
             <Grid.Resources>
@@ -54,9 +56,9 @@
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
-            </Grid.Resources>            
-            
-            
+            </Grid.Resources>
+
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="ClmGroups"/>
                 <ColumnDefinition x:Name="ClmFreqs" Width="3*"/>
@@ -88,9 +90,10 @@
                 <xcdg:DataGridControl.Columns>
                     <!--Preconfigure the OrderID Column of the grid with CellValidationRule. -->
                     <xcdg:Column FieldName="Frequency" Title="Frequency (kHz)" IsMainColumn="True">
-                        
+
                     </xcdg:Column>
                     <xcdg:Column FieldName="Name" Title="Name"></xcdg:Column>
+                    <xcdg:Column FieldName="QSL" Title="QSL"></xcdg:Column>
                     <xcdg:Column FieldName="Modulation" Title="Modulation">
                         <!--
                         <xcdg:Column.CellEditor>
@@ -106,12 +109,20 @@
                         </xcdg:Column.CellEditor>
                         -->
                     </xcdg:Column>
+                    <xcdg:Column FieldName="Modulation Type" Title="Modulation Type"></xcdg:Column>
+                    <xcdg:Column FieldName="Protocol" Title="Protocol"></xcdg:Column>
+                    <xcdg:Column FieldName="Bandwidth" Title="Bandwidth"></xcdg:Column>
+                    <xcdg:Column FieldName="Country" Title="Country"></xcdg:Column>
+                    <xcdg:Column FieldName="User" Title="User"></xcdg:Column>
+                    <xcdg:Column FieldName="Description" Title="Description"></xcdg:Column>
+                    <xcdg:Column FieldName="References" Title="References"></xcdg:Column>
 
                 </xcdg:DataGridControl.Columns>
             </xcdg:DataGridControl>
 
 
-
+            <xctk:BusyIndicator x:Name="BusyIndicator" IsBusy="{Binding IsBusy}" Grid.Column="1">
+            </xctk:BusyIndicator>
         </Grid>
     </DockPanel>
 </Window>

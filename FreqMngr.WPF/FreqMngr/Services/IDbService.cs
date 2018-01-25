@@ -11,10 +11,10 @@ namespace FreqMngr.Services
 {
     interface IDbService
     {
-        IEnumerable<Group> GetAllGroups();
-        void FillFreqs(ObservableCollection<Freq> list, Group group);
-        IEnumerable<Freq> GetFreqs(Group group);
-        IEnumerable<Group> GetGroupsTree();        
+        List<Group> GetAllGroups();        
+        List<Freq> GetFreqs(Group group);
+        List<Group> GetGroupsTree();
+        Task<List<Group>> GetGroupsTreeAsync();
         bool Connect();
     }
 }

@@ -10,9 +10,9 @@ namespace FreqMngr.Services
 {
     public class DbServiceMock : IDbService
     {
-        public IEnumerable<Group> GetAllGroups()
+        public List<Group> GetAllGroups()
         {
-            ObservableCollection<Group> groupList = new ObservableCollection<Group>();
+            List<Group> groupList = new List<Group>();
             groupList.Add(new Group(1, "All", 0));
             groupList.Add(new Group(2, "HF", 1));
             groupList.Add(new Group(3, "Mil-Gov", 2));
@@ -26,7 +26,7 @@ namespace FreqMngr.Services
             return groupList;
         }
 
-        public IEnumerable<Freq> GetFreqs(Group group)
+        public List<Freq> GetFreqs(Group group)
         {
             throw new NotImplementedException();
         }
@@ -41,9 +41,9 @@ namespace FreqMngr.Services
             return true;
         }
 
-        public IEnumerable<Group> GetGroupsTree()
+        public List<Group> GetGroupsTree()
         {
-            ObservableCollection<Group> groupList = new ObservableCollection<Group>();
+            List<Group> groupList = new List<Group>();
             Group root = new Group(1, "All", 0);
             groupList.Add(root);
 
@@ -83,6 +83,11 @@ namespace FreqMngr.Services
         public void FillFreqs(ObservableCollection<Freq> list, Group group)
         {
             return;
+        }
+
+        public Task<List<Group>> GetGroupsTreeAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }
