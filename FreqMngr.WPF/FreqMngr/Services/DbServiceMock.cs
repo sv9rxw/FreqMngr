@@ -79,5 +79,10 @@ namespace FreqMngr.Services
 
             return groupList;
         }
+
+        public void FillFreqs(ObservableCollection<Freq> list, Group group)
+        {
+            return;
+        }
     }
 }

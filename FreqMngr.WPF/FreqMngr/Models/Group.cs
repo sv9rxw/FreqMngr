@@ -20,6 +20,23 @@ namespace FreqMngr.Models
             }
         }
 
+        private bool _Expanded = true;
+        public bool Expanded
+        {
+            get
+            {
+                return _Expanded;
+            }
+            set
+            {
+                if (value == _Expanded)
+                    return;
+
+                _Expanded = value;
+                OnPropertyChanged(nameof(Expanded));
+            }
+        }
+
         private Group _Parent = null;
         public Group Parent
         {

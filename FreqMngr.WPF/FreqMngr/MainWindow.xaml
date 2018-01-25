@@ -4,9 +4,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:s="clr-namespace:System;assembly=mscorlib"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:local="clr-namespace:FreqMngr"                   
         xmlns:models="clr-namespace:FreqMngr.Models"        
+        xmlns:helpers="clr-namespace:FreqMngr.Helpers"
         xmlns:ViewModels="clr-namespace:FreqMngr.ViewModels"        
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"        
         xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"               
@@ -19,26 +20,94 @@
     </Window.Resources>
 
     <DockPanel x:Name="PnlMain" DataContext="{Binding Source={StaticResource MainWindowViewModelDataSource}}" >
-        <ToolBar x:Name="BarMain" DockPanel.Dock="Top"/>
-        <Grid x:Name="GridMain" DockPanel.Dock="Bottom" Width="1020">
+        <ToolBar x:Name="BarMain" DockPanel.Dock="Top">
+            <Button x:Name="BtnLoad">
+                
+            </Button>
+            <Button x:Name="BtnSave" >
+                <Image Width="16" Source="Resources/Save_16x.png" ></Image>
+            </Button>
+            <!--
+            <TextBlock x:Name="TxtSelectedGroup" TextWrapping="Wrap" Text="{Binding ActiveGroup}" Width="100"/>
+            -->
+        </ToolBar>
+        <Grid x:Name="GridMain" DockPanel.Dock="Bottom">
+            <Grid.Resources>
+                <xcdg:DataGridCollectionViewSource x:Key="ViewSourceFreqs"
+                                            Source="{Binding Freqs}">
+                    <xcdg:DataGridCollectionViewSource.GroupDescriptions>
+                        <PropertyGroupDescription PropertyName="Modulation" />
+                        <PropertyGroupDescription PropertyName="ModulationType" />
+                    </xcdg:DataGridCollectionViewSource.GroupDescriptions>
+                </xcdg:DataGridCollectionViewSource>
+                <DataTemplate x:Key="FrequencyDataTemplate">
+                    <Grid MaxHeight="30"
+               VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="1"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                            <TextBox Text="{Binding Path=. }" Width="200"></TextBox>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </Grid.Resources>            
+            
+            
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="ClmGroups"/>
                 <ColumnDefinition x:Name="ClmFreqs" Width="3*"/>
                 <ColumnDefinition x:Name="ClmEdit" Width="2*"/>
             </Grid.ColumnDefinitions>
 
-            <TreeView x:Name="TreeGroups" Grid.Column="0" ItemsSource="{Binding Groups}">
+            <TreeView x:Name="TreeGroups" 
+                      Grid.Column="0" 
+                      ItemsSource="{Binding Groups}" 
+                      helpers:TreeViewAttached.TreeViewSelectedItem="{Binding ActiveGroup, Mode=TwoWay}">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type models:Group}">
                         <TextBlock Text="{Binding Name}"/>
-                    </HierarchicalDataTemplate>                    
+                    </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
+
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem">
+                        <Setter Property="IsExpanded" Value="{Binding Expanded}"/>
+                    </Style>
+                </TreeView.ItemContainerStyle>
             </TreeView>
 
             <xcdg:DataGridControl x:Name="DataGridFreqs" Grid.Column="1" ItemsSource="{Binding Freqs}">
                 <xcdg:DataGridControl.View>
                     <xcdg:TableflowView FixedColumnCount="1" />
                 </xcdg:DataGridControl.View>
+
+                <xcdg:DataGridControl.Columns>
+                    <!--Preconfigure the OrderID Column of the grid with CellValidationRule. -->
+                    <xcdg:Column FieldName="Frequency" Title="Frequency (kHz)" IsMainColumn="True">
+                        
+                    </xcdg:Column>
+                    <xcdg:Column FieldName="Name" Title="Name"></xcdg:Column>
+                    <xcdg:Column FieldName="Modulation" Title="Modulation">
+                        <!--
+                        <xcdg:Column.CellEditor>
+                            <xcdg:CellEditor>
+                                <xcdg:CellEditor.EditTemplate>
+                                    <DataTemplate>
+                                        <ComboBox 
+                                          ItemsSource="{Binding Path=Modulations, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                          SelectedValue="{xcdg:CellEditorBinding}" IsEditable="True" Foreground="Black" IsSynchronizedWithCurrentItem="True" />
+                                    </DataTemplate>
+                                </xcdg:CellEditor.EditTemplate>
+                            </xcdg:CellEditor>
+                        </xcdg:Column.CellEditor>
+                        -->
+                    </xcdg:Column>
+
+                </xcdg:DataGridControl.Columns>
             </xcdg:DataGridControl>
 
 

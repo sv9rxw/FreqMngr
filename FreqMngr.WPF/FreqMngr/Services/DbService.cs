@@ -18,7 +18,13 @@ namespace FreqMngr.Services
         private static String TABLEGROUPS_CLM_ID = "Id";
         private static String TABLEGROUPS_CLM_NAME = "Name";
         private static String TABLEGROUPS_CLM_PARENTID = "ParentId";
-        private static String TABLEGROUPS_CLM_NUMERICALMAPPING = "NumericalMapping";
+
+        private static String TABLEFREQS_CLM_ID = "Id";
+        private static String TABLEFREQS_CLM_FREQUENCY = "Frequency";
+        private static String TABLEFREQS_CLM_NAME = "Name";        
+        private static String TABLEFREQS_CLM_PARENTID = "ParentId";
+        private static String TABLEFREQS_CLM_MODULATION = "Modulation";
+        
 
         private String _MdfDbFilePath;
         private String _ConnectionString = null;
@@ -68,8 +74,7 @@ namespace FreqMngr.Services
                 int groupId = (int)reader[TABLEGROUPS_CLM_ID];
                 String groupName = (String)reader[TABLEGROUPS_CLM_NAME];
                 int groupParentId = reader[TABLEGROUPS_CLM_PARENTID] as int? ?? default(int);                
-                Group group = new Group(groupId, groupName, groupParentId);
-                group.NumericalMapping = (String)reader[TABLEGROUPS_CLM_NUMERICALMAPPING];
+                Group group = new Group(groupId, groupName, groupParentId);                
                 groupList.Add(group);
                 Console.WriteLine(group.ToString());
             }
@@ -86,10 +91,89 @@ namespace FreqMngr.Services
                                                             
             return root;
         }
-
-        public IEnumerable<Freq> GetFreqs(Group group)
+        
+        private void LoadFreqs(ObservableCollection<Freq> list, Group group)
         {
-            throw new NotImplementedException(nameof(GetFreqs));
+            if (_Connected == false) throw new Exception("Not connected to any database");
+
+            SqlCommand cmd = new SqlCommand("select * from TableFreqs where ParentId = '" + group.Id + "'", _SqlConnection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            
+
+            while (reader.Read())
+            {
+                int freqId = (int)reader[TABLEFREQS_CLM_ID];
+                double freqFrequency = (double)reader[TABLEFREQS_CLM_FREQUENCY];
+                String freqName = (String)reader[TABLEFREQS_CLM_NAME];
+                int parentId = (int)reader[TABLEFREQS_CLM_PARENTID];
+                String freqModulation = (String)reader[TABLEFREQS_CLM_MODULATION];
+
+
+                Freq freq = new Freq()
+                {
+                    Frequency = freqFrequency.ToString(),
+                    Name = freqName,
+                    Modulation = freqModulation
+                };
+
+                list.Add(freq);
+
+                Debug.WriteLine("Found: " + freqId.ToString() + ", " + freqName);
+            }
+
+            reader.Close();
+
+            foreach(Group childgroup in group.Children)
+            {
+                LoadFreqs(list, childgroup);
+            }
+        }            
+        
+        public IEnumerable<Freq> GetFreqs(Group group)
+        {            
+            ObservableCollection<Freq> freqList = new ObservableCollection<Freq>();
+            //Load frequencies of this group and its children recursively
+            LoadFreqs(freqList, group);         
+            return freqList;
+        }
+
+        public void FillFreqs(ObservableCollection<Freq> list, Group group)
+        {
+            if (list == null)
+                throw new NullReferenceException(nameof(FillFreqs) + ":list");
+
+            if (group == null)
+                return;
+
+            if (_Connected == false)
+                throw new Exception("Not connected to any database");
+
+            SqlCommand cmd = new SqlCommand("select * from TableFreqs where ParentId = '" + group.Id + "'", _SqlConnection);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+
+            while (reader.Read())
+            {
+                int freqId = (int)reader[TABLEFREQS_CLM_ID];
+                double freqFrequency = (double)reader[TABLEFREQS_CLM_FREQUENCY];
+                String freqName = (String)reader[TABLEFREQS_CLM_NAME];
+                int parentId = (int)reader[TABLEFREQS_CLM_PARENTID];
+                String freqModulation = (String)reader[TABLEFREQS_CLM_MODULATION];
+
+
+                Freq freq = new Freq()
+                {
+                    Frequency = freqFrequency.ToString(),
+                    Name = freqName,
+                    Modulation = freqModulation
+                };
+
+                list.Add(freq);
+
+                Debug.WriteLine("Found: " + freqId.ToString() + ", " + freqName);
+            }
+
+            reader.Close();
         }
 
         private void LoadChildren(IEnumerable<Group> groupList, Group parent)

@@ -13,8 +13,6 @@ namespace FreqMngr.ViewModels
     {
         public MainWindowViewModel()
         {
-
-
             if (IsInDesignMode)
                 Service = new DbServiceMock("designmode");
             else
@@ -23,9 +21,36 @@ namespace FreqMngr.ViewModels
                 Service = new DbService(folderPath + @"\FreqDB.mdf");
             }
 
+            this.PropertyChanged += MainWindowViewModel_PropertyChanged;
+
             Service.Connect();
-            _Groups = (ObservableCollection<Group>)Service.GetGroupsTree();
-            
+            _Groups = (ObservableCollection<Group>)Service.GetGroupsTree();       
+        }
+
+        private void MainWindowViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e != null && e.PropertyName != null)
+            {
+                if (e.PropertyName == nameof(ActiveGroup))
+                {
+                    Console.WriteLine(nameof(ActiveGroup) + " changed");
+
+                    //TODO: load Freqs of ActiveGroup
+                    _Freqs.Clear();
+                    FillFreqs(_Freqs, _ActiveGroup);
+                }
+            }
+        }
+
+        private void FillFreqs(ObservableCollection<Freq> list, Group group)
+        {
+
+            Service.FillFreqs(list, group);
+
+            foreach(Group childGroup in group.Children)
+            {
+                FillFreqs(list, childGroup);
+            }
         }
 
         private void TestPrintGroups(IEnumerable<Group> groupList)
@@ -41,7 +66,7 @@ namespace FreqMngr.ViewModels
             set { _Service = value; }
         }
 
-        private ObservableCollection<Group> _Groups = null;
+        private ObservableCollection<Group> _Groups = new ObservableCollection<Group>();
         public ObservableCollection<Group> Groups
         {
             get { return _Groups; }
@@ -56,7 +81,7 @@ namespace FreqMngr.ViewModels
         }
 
 
-        private ObservableCollection<Freq> _Freqs;
+        private ObservableCollection<Freq> _Freqs = new ObservableCollection<Freq>();
         public ObservableCollection<Freq> Freqs
         {
             get
