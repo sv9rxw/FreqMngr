@@ -20,7 +20,6 @@ namespace FreqMngr.Models
             }
         }
 
-
         private Group _Parent = null;
         public Group Parent
         {
@@ -39,8 +38,32 @@ namespace FreqMngr.Models
         }
 
         private int _Id;
+        public int Id
+        {
+            get { return _Id; }
+            set
+            {
+                if (value == _Id)
+                    return;
+
+                _Id = value;
+                OnPropertyChanged(nameof(Id));
+            }
+        }
 
         private int _ParentId;
+        public int ParentId
+        {
+            get { return _ParentId; }
+            set
+            {
+                if (value == _ParentId)
+                    return;
+
+                _ParentId = value;
+                OnPropertyChanged(nameof(ParentId));
+            }
+        }
 
         private String _Name = null;
         public String Name

@@ -83,6 +83,8 @@
     <Compile Include="Models\Freq.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Services\DbService.cs" />
+    <Compile Include="Services\DbServiceMock.cs" />
+    <Compile Include="Services\IDbService.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Page Include="InputDialog.xaml">

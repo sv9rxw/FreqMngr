@@ -13,11 +13,12 @@ using System.Collections.ObjectModel;
 
 namespace FreqMngr.Services
 {
-    public class DbService
+    public class DbService : IDbService
     {
         private static String TABLEGROUPS_CLM_ID = "Id";
         private static String TABLEGROUPS_CLM_NAME = "Name";
         private static String TABLEGROUPS_CLM_PARENTID = "ParentId";
+        private static String TABLEGROUPS_CLM_NUMERICALMAPPING = "NumericalMapping";
 
         private String _MdfDbFilePath;
         private String _ConnectionString = null;
@@ -66,9 +67,11 @@ namespace FreqMngr.Services
             {
                 int groupId = (int)reader[TABLEGROUPS_CLM_ID];
                 String groupName = (String)reader[TABLEGROUPS_CLM_NAME];
-                int groupParentId = (int)reader[TABLEGROUPS_CLM_PARENTID];
+                int groupParentId = reader[TABLEGROUPS_CLM_PARENTID] as int? ?? default(int);                
                 Group group = new Group(groupId, groupName, groupParentId);
+                group.NumericalMapping = (String)reader[TABLEGROUPS_CLM_NUMERICALMAPPING];
                 groupList.Add(group);
+                Console.WriteLine(group.ToString());
             }
             reader.Close();
             return groupList;
@@ -79,9 +82,7 @@ namespace FreqMngr.Services
             if (_Connected==false) throw new Exception("Not connected to any database");
             Group root = null;
 
-            IEnumerable<Group> allGroupsList = GetAllGroups();
-            
-
+            IEnumerable<Group> allGroupsList = GetAllGroups();            
                                                             
             return root;
         }
@@ -90,6 +91,38 @@ namespace FreqMngr.Services
         {
             throw new NotImplementedException(nameof(GetFreqs));
         }
-        
+
+        private void LoadChildren(IEnumerable<Group> groupList, Group parent)
+        {
+            foreach(Group group in groupList)
+            {
+                if (group.ParentId == parent.Id)
+                {
+                    parent.Children.Add(group);
+                    group.Parent = parent;
+                    LoadChildren(groupList, group);
+                }
+            }
+        }
+
+        public IEnumerable<Group> GetGroupsTree()
+        {
+            IEnumerable<Group> groupList = GetAllGroups();
+
+            ObservableCollection<Group> groupTree = new ObservableCollection<Group>();
+                      
+            // Get root group
+            foreach(Group group in groupList)
+            {
+                if (group.Id==1)
+                {
+                    Debug.WriteLine("Found root group: " + group.ToString());
+                    groupTree.Add(group);
+                    LoadChildren(groupList, group);
+                }
+            }            
+
+            return groupTree;
+        }
     }
 }

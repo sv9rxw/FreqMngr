@@ -13,10 +13,19 @@ namespace FreqMngr.ViewModels
     {
         public MainWindowViewModel()
         {
-            Service = new DbService(@"C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\FreqDB.mdf");
+
+
+            if (IsInDesignMode)
+                Service = new DbServiceMock("designmode");
+            else
+            {
+                String folderPath = System.IO.Directory.GetCurrentDirectory();
+                Service = new DbService(folderPath + @"\FreqDB.mdf");
+            }
+
             Service.Connect();
-            var mlkia = Service.GetAllGroups();
-            TestPrintGroups(mlkia);
+            _Groups = (ObservableCollection<Group>)Service.GetGroupsTree();
+            
         }
 
         private void TestPrintGroups(IEnumerable<Group> groupList)
@@ -25,7 +34,27 @@ namespace FreqMngr.ViewModels
                 Console.WriteLine(group.ToString());            
         }
 
-        private DbService Service { get; set; } = null;
+        private IDbService _Service = null;
+        private IDbService Service
+        {
+            get { return _Service; }
+            set { _Service = value; }
+        }
+
+        private ObservableCollection<Group> _Groups = null;
+        public ObservableCollection<Group> Groups
+        {
+            get { return _Groups; }
+            set
+            {
+                if (value == _Groups)
+                    return;
+
+                _Groups = value;
+                OnPropertyChanged(nameof(Groups));
+            }
+        }
+
 
         private ObservableCollection<Freq> _Freqs;
         public ObservableCollection<Freq> Freqs

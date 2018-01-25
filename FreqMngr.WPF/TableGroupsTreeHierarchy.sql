@@ -35,3 +35,13 @@ WHILE EXISTS (SELECT * FROM TableGroups WHERE NumericalMapping Is Null)
     WHERE P.PathIndex >= 0 
     AND T.NumericalMapping IS NULL;  
 
+
+WITH Items(Id, Name, ParentId, Depth, PathIndex, ItemNumber) 
+AS 
+(
+	SELECT Id, Name, ParentId, depth, PathIndex, NumericalMapping
+	FROM TableGroups
+) 
+SELECT * 
+FROM Items 
+ORDER BY CONVERT(hierarchyid, '/' + ItemNumber + '/')
