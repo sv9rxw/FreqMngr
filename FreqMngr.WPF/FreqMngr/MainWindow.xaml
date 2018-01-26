@@ -3,12 +3,13 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"        
         xmlns:s="clr-namespace:System;assembly=mscorlib"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:local="clr-namespace:FreqMngr"                   
         xmlns:models="clr-namespace:FreqMngr.Models"        
         xmlns:helpers="clr-namespace:FreqMngr.Helpers"
-        xmlns:ViewModels="clr-namespace:FreqMngr.ViewModels"        
+        xmlns:ViewModels="clr-namespace:FreqMngr.ViewModels"                
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"        
         xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"               
         mc:Ignorable="d"
@@ -22,16 +23,17 @@
     <DockPanel x:Name="PnlMain" DataContext="{Binding Source={StaticResource MainWindowViewModelDataSource}}" >
         <ToolBar x:Name="BarMain" DockPanel.Dock="Top">
 
-            <Button x:Name="BtnLoad" Grid.Column="0" ToolTip="Load frequency database"
+            <Button x:Name="BtnLoad" ToolTip="Load frequency database"
                     Command="{Binding LoadDatabaseCommand}">
                 <Image Width="16" Source="Resources/Database_16x.png" ></Image>
             </Button>
-            <Button x:Name="BtnSave" Grid.Column="0" ToolTip="Save changes to database">
+            <Button x:Name="BtnSave" ToolTip="Save changes to database">
                 <Image Width="16" Source="Resources/Save_16x.png" ></Image>
             </Button>
 
             <TextBlock Text="Showing group: " Margin="50,0,0,0" VerticalAlignment="Center"/>
             <TextBlock x:Name="TxtSelectedGroup" Margin="30,0,0,0" VerticalAlignment="Center" Text="{Binding ActiveGroup.Name}" Width="200" FontSize="14" FontWeight="SemiBold"/>
+            <Button x:Name="TestCutCommand" Command="{Binding CutFreqsCommand}">Test Cut Command</Button>
         </ToolBar>
         <Grid x:Name="GridMain" DockPanel.Dock="Bottom">
             <Grid.Resources>
@@ -56,13 +58,16 @@
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
+                <Style TargetType="{x:Type xcdg:DataRow}">
+                    <Setter Property="ToolTip" Value="{Binding Description}"/>
+                </Style>
             </Grid.Resources>
 
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="ClmGroups"/>
-                <ColumnDefinition x:Name="ClmFreqs" Width="3*"/>
-                <ColumnDefinition x:Name="ClmEdit" Width="2*"/>
+                <ColumnDefinition x:Name="ClmFreqs" Width="4*"/>
+                <ColumnDefinition x:Name="ClmEdit" Width="*"/>
             </Grid.ColumnDefinitions>
 
             <TreeView x:Name="TreeGroups" 
@@ -82,10 +87,45 @@
                 </TreeView.ItemContainerStyle>
             </TreeView>
 
-            <xcdg:DataGridControl x:Name="DataGridFreqs" Grid.Column="1" ItemsSource="{Binding Freqs}">
+            <xcdg:DataGridControl x:Name="DataGridFreqs" Grid.Column="1" 
+                                           ItemsSource="{Binding Freqs}"
+                                           AutoCreateColumns="False"                                         
+                                           SelectedItem="{Binding ActiveFreq}" >
+                <xcdg:DataGridControl.Resources>
+                    <Style TargetType="{x:Type ToolTip}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Border BorderBrush="Cyan" Background="Aqua">
+                                        <ContentPresenter Content="{TemplateBinding ToolTip.Content}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </xcdg:DataGridControl.Resources>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding FreqsSelectionChangedCommand}" CommandParameter="{Binding SelectedItems, ElementName=DataGridFreqs}" ></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+
                 <xcdg:DataGridControl.View>
                     <xcdg:TableflowView FixedColumnCount="1" />
                 </xcdg:DataGridControl.View>
+                <xcdg:DataGridControl.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem x:Name="MnuNew" Header="New" Command="{Binding NewFreqCommand}" />
+                        <MenuItem x:Name="MnuEdit" Header="Edit" />
+                        <Separator />
+                        <MenuItem x:Name="MnuCut" Header="Cut" Command="{Binding CutFreqsCommand}"/>
+                        <MenuItem x:Name="MnuCopy" Header="Copy" />
+                        <MenuItem x:Name="MnuPaste" Header="Paste" />
+                        <Separator />
+                        <MenuItem x:Name="MnuDelete" Header="Delete" />
+                    </ContextMenu>
+                </xcdg:DataGridControl.ContextMenu>
 
                 <xcdg:DataGridControl.Columns>
                     <!--Preconfigure the OrderID Column of the grid with CellValidationRule. -->
@@ -109,11 +149,12 @@
                         </xcdg:Column.CellEditor>
                         -->
                     </xcdg:Column>
-                    <xcdg:Column FieldName="Modulation Type" Title="Modulation Type"></xcdg:Column>
+                    <xcdg:Column FieldName="ModulationType" Title="Modulation Type"></xcdg:Column>
                     <xcdg:Column FieldName="Protocol" Title="Protocol"></xcdg:Column>
-                    <xcdg:Column FieldName="Bandwidth" Title="Bandwidth"></xcdg:Column>
+                    <xcdg:Column FieldName="Bandwidth" Title="Bandwidth (kHz)"></xcdg:Column>
                     <xcdg:Column FieldName="Country" Title="Country"></xcdg:Column>
                     <xcdg:Column FieldName="User" Title="User"></xcdg:Column>
+                    <xcdg:Column FieldName="Coordinates" Title="Coordinates"></xcdg:Column>
                     <xcdg:Column FieldName="Description" Title="Description"></xcdg:Column>
                     <xcdg:Column FieldName="References" Title="References"></xcdg:Column>
 

@@ -19,11 +19,34 @@ namespace FreqMngr.Models
         {
             if (PropertyChanged != null)
             {
+                this._IsDirty = true;
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-        private NumberFormatInfo NumberFormat { get; set; } = null;        
+        private NumberFormatInfo NumberFormat { get; set; } = null;
+
+        private Group _Parent = null;
+        public Group Parent
+        {
+            get
+            {
+                return _Parent;
+            }
+            set
+            {
+                _Parent = value;
+            }
+        }
+
+        private bool _IsDirty = false;
+        public bool IsDirty
+        {
+            get
+            {
+                return _IsDirty;
+            }
+        }
 
         private String _Name;
         public String Name
@@ -36,15 +59,14 @@ namespace FreqMngr.Models
             {
                 if (value == _Name)
                     return;
+
                 _Name = value;
                 OnPropertyChanged(nameof(Name));
             }
-        }
+        }        
 
-        private double FrequencyInKHz { get; set; }
-
-        private String _Frequency = String.Empty;
-        public String Frequency
+        private double _Frequency;
+        public double Frequency
         {
             get
             {
@@ -57,12 +79,10 @@ namespace FreqMngr.Models
                 _Frequency = value;
                 OnPropertyChanged(nameof(Frequency));
             }
-        }
+        }        
 
-        private double BandwidthInKHz { get; set; }
-
-        private String _Bandwidth;
-        public String Bandwidth
+        private double _Bandwidth;
+        public double Bandwidth
         {
             get
             {
@@ -76,56 +96,160 @@ namespace FreqMngr.Models
                 OnPropertyChanged(nameof(Bandwidth));
             }
         }
-        
+
+        private String _Modulation = null;
         public String Modulation
         {
-            get; set;
+            get
+            {
+                return _Modulation;
+            }
+            set
+            {
+                if (value == _Modulation)
+                    return;
+
+                _Modulation = value;
+                OnPropertyChanged(nameof(Modulation));
+            }
         }
-        
+
+        private String _ModulationType = null;
         public String ModulationType
         {
-            get; set;
+            get
+            {
+                return _ModulationType;
+            }
+            set
+            {
+                if (value == _ModulationType)
+                    return;
+
+                _ModulationType = value;
+                OnPropertyChanged(nameof(ModulationType));
+            }
         }
 
+        private String _Protocol = null;
         public String Protocol
         {
-            get; set;
+            get
+            {
+                return _Protocol;
+            }
+            set
+            {
+                if (value == _Protocol)
+                    return;
+
+                _Protocol = value;
+                OnPropertyChanged(nameof(Protocol));
+            }
         }
 
+        private String _Country = null;
         public String Country
         {
-            get; set;
+            get
+            {
+                return _Country;
+            }
+            set
+            {
+                if (value == _Country)
+                    return;
+
+                _Country = value;                
+                OnPropertyChanged(nameof(Country));
+            }
         }
 
+        private String _User = null;
         public String User
         {
-            get; set;
-        }
-        
+            get
+            {
+                return _User;
+            }
+            set
+            {
+                if (value == _User)
+                    return;
 
+                _User = value;
+                OnPropertyChanged(nameof(User));
+            }
+        }
+
+
+        private String _Coordinates = null;
         public String Coordinates
         {
-            get; set;
+            get
+            {
+                return _Coordinates;
+            }
+            set
+            {
+                if (value == _Coordinates)
+                    return;
+
+                _Coordinates = value;
+                OnPropertyChanged(nameof(Coordinates));
+            }
         }
 
+        private String _Description;
         public String Description
         {
-            get; set;
+            get
+            {
+                return _Description;
+            }
+            set
+            {
+                if (value == _Description)
+                    return;
+
+                _Description = value;
+                OnPropertyChanged(nameof(Description));
+            }
         }
 
-        public String URLs
+        private String _References = null;
+        public String References
         {
-            get; set;
+            get
+            {
+                return _References;
+            }
+            set
+            {
+                if (value == _References)
+                    return;
+
+                _References = value;
+                OnPropertyChanged(nameof(References));
+            }    
+            
         }
 
-        private String QSLStr
+        private String _QSL = null;
+        public String QSL
         {
-            get; set;
-        }
+            get
+            {
+                return _QSL;
+            }
+            set
+            {
+                if (value == _QSL)
+                    return;
 
-        public bool QSL
-        {
-            get; set;
+                _QSL = value;
+                OnPropertyChanged(nameof(QSL));
+            }
         }
 
 

@@ -25,7 +25,32 @@ namespace FreqMngr.Services
         private static String TABLEFREQS_CLM_NAME = "Name";        
         private static String TABLEFREQS_CLM_PARENTID = "ParentId";
         private static String TABLEFREQS_CLM_MODULATION = "Modulation";
-        
+        private static String TABLEFREQS_CLM_MODULATIONTYPE = "ModulationDetails";
+        private static String TABLEFREQS_CLM_PROTOCOL = "Protocol";
+        private static String TABLEFREQS_CLM_BANDWIDTH = "Bandwidth";
+        private static String TABLEFREQS_CLM_COUNTRY = "Country";
+        private static String TABLEFREQS_CLM_USER = "User";        
+        private static String TABLEFREQS_CLM_DESCRIPTION = "Description";
+        private static String TABLEFREQS_CLM_REFERENCES = "References";
+        private static String TABLEFREQS_CLM_QSL = "QSL";
+        private static String TABLEFREQS_CLM_COORDINATES = "Coordinates";
+
+        private static int TABLEFREQS_CLM_IDX_ID = 0;
+        private static int TABLEFREQS_CLM_IDX_NAME = 1;
+        private static int TABLEFREQS_CLM_IDX_FREQUENCY = 2;
+        private static int TABLEFREQS_CLM_IDX_PARENTID = 3;
+        private static int TABLEFREQS_CLM_IDX_MODULATION = 4;
+        private static int TABLEFREQS_CLM_IDX_MODULATIONTYPE = 5;
+        private static int TABLEFREQS_CLM_IDX_PROTOCOL = 6;
+        private static int TABLEFREQS_CLM_IDX_BANDWIDTH = 7;
+        private static int TABLEFREQS_CLM_IDX_COUNTRY = 8;
+        private static int TABLEFREQS_CLM_IDX_USER = 9;
+        private static int TABLEFREQS_CLM_IDX_DESCRIPTION = 10;
+        private static int TABLEFREQS_CLM_IDX_REFERENCES = 11;
+        private static int TABLEFREQS_CLM_IDX_QSL = 12;
+        private static int TABLEFREQS_CLM_IDX_COORDINATES = 13;
+
+
 
         private String _MdfDbFilePath;
         private String _ConnectionString = null;
@@ -91,44 +116,51 @@ namespace FreqMngr.Services
                                                             
             return root;
         }
-        
-        private void LoadFreqs(List<Freq> list, Group group)
+
+        //private void LoadFreqs(List<Freq> list, Group group)
+        //{
+        //    if (_Connected == false) throw new Exception("Not connected to any database");
+
+        //    SqlCommand cmd = new SqlCommand("select * from TableFreqs where ParentId = '" + group.Id + "'", _SqlConnection);
+        //    SqlDataReader reader = cmd.ExecuteReader();
+
+
+        //    while (reader.Read())
+        //    {
+        //        int freqId = (int)reader[TABLEFREQS_CLM_ID];
+        //        double freqFrequency = (double)reader[TABLEFREQS_CLM_FREQUENCY];
+        //        String freqName = (String)reader[TABLEFREQS_CLM_NAME];
+        //        int parentId = (int)reader[TABLEFREQS_CLM_PARENTID];
+        //        String freqModulation = (String)reader[TABLEFREQS_CLM_MODULATION];
+
+
+        //        Freq freq = new Freq()
+        //        {
+        //            Frequency = freqFrequency,
+        //            Name = freqName,
+        //            Modulation = freqModulation
+        //        };
+
+        //        list.Add(freq);
+
+        //        Debug.WriteLine("Found: " + freqId.ToString() + ", " + freqName);
+        //    }
+
+        //    reader.Close();
+
+        //    foreach(Group childgroup in group.Children)
+        //    {
+        //        LoadFreqs(list, childgroup);
+        //    }
+        //}            
+
+        private String SafeGetString(SqlDataReader reader, int colIndex)
         {
-            if (_Connected == false) throw new Exception("Not connected to any database");
+            if (!reader.IsDBNull(colIndex))
+                return reader.GetString(colIndex);
+            return String.Empty;
+        }
 
-            SqlCommand cmd = new SqlCommand("select * from TableFreqs where ParentId = '" + group.Id + "'", _SqlConnection);
-            SqlDataReader reader = cmd.ExecuteReader();
-            
-
-            while (reader.Read())
-            {
-                int freqId = (int)reader[TABLEFREQS_CLM_ID];
-                double freqFrequency = (double)reader[TABLEFREQS_CLM_FREQUENCY];
-                String freqName = (String)reader[TABLEFREQS_CLM_NAME];
-                int parentId = (int)reader[TABLEFREQS_CLM_PARENTID];
-                String freqModulation = (String)reader[TABLEFREQS_CLM_MODULATION];
-
-
-                Freq freq = new Freq()
-                {
-                    Frequency = freqFrequency.ToString(),
-                    Name = freqName,
-                    Modulation = freqModulation
-                };
-
-                list.Add(freq);
-
-                Debug.WriteLine("Found: " + freqId.ToString() + ", " + freqName);
-            }
-
-            reader.Close();
-
-            foreach(Group childgroup in group.Children)
-            {
-                LoadFreqs(list, childgroup);
-            }
-        }            
-        
         public List<Freq> GetFreqs(Group group)
         {            
             List<Freq> freqList = new List<Freq>();
@@ -143,15 +175,35 @@ namespace FreqMngr.Services
                 int freqId = (int)reader[TABLEFREQS_CLM_ID];
                 double freqFrequency = (double)reader[TABLEFREQS_CLM_FREQUENCY];
                 String freqName = (String)reader[TABLEFREQS_CLM_NAME];
-                int parentId = (int)reader[TABLEFREQS_CLM_PARENTID];
-                String freqModulation = (String)reader[TABLEFREQS_CLM_MODULATION];
+                int parentId = reader[TABLEFREQS_CLM_PARENTID] as int? ?? default(int);
+                String freqModulation = SafeGetString(reader, TABLEFREQS_CLM_IDX_MODULATION);
+                String freqModulationType = SafeGetString(reader, TABLEFREQS_CLM_IDX_MODULATIONTYPE);
+                String freqProtocol = SafeGetString(reader, TABLEFREQS_CLM_IDX_PROTOCOL);
+                double freqBandwidth = reader[TABLEFREQS_CLM_BANDWIDTH] as double? ?? default(double);
+
+                String freqCountry = SafeGetString(reader, TABLEFREQS_CLM_IDX_COUNTRY);
+                String freqUser = SafeGetString(reader, TABLEFREQS_CLM_IDX_USER);
+                String freqDescription = SafeGetString(reader, TABLEFREQS_CLM_IDX_DESCRIPTION);
+                String freqReferences = SafeGetString(reader, TABLEFREQS_CLM_IDX_REFERENCES);
+                String freqQSL = SafeGetString(reader, TABLEFREQS_CLM_IDX_QSL);
+                String freqCoordinates = SafeGetString(reader, TABLEFREQS_CLM_IDX_COORDINATES);
 
 
                 Freq freq = new Freq()
-                {
-                    Frequency = freqFrequency.ToString(),
+                {                    
+                    Parent = group,
+                    Frequency = freqFrequency,
                     Name = freqName,
-                    Modulation = freqModulation
+                    Modulation = freqModulation,
+                    ModulationType = freqModulationType,
+                    Protocol = freqProtocol,
+                    Bandwidth = freqBandwidth,
+                    Country = freqCountry,
+                    User = freqUser,
+                    Description = freqDescription,
+                    References = freqReferences,
+                    QSL = freqQSL,
+                    Coordinates = freqCoordinates
                 };
 
                 freqList.Add(freq);

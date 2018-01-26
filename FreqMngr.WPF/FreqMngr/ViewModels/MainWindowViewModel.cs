@@ -58,9 +58,38 @@ namespace FreqMngr.ViewModels
 
             this.PropertyChanged += MainWindowViewModel_PropertyChanged;
 
-            //Service.Connect();
-            //_Groups = (ObservableCollection<Group>)Service.GetGroupsTree();       
-            this.SelectedFreqs.CollectionChanged += SelectedFreqs_CollectionChanged;
+            this._FreqsSelectionChangedCommand = new RelayCommand((item) =>
+            {
+                _SelectedFreqs.Clear();
+
+                IList<object> list = (IList<object>)item;
+                if (list != null)
+                {
+                    foreach (object obj in list)
+                    {
+                        if (obj != null)
+                        {
+                            if (obj is Freq)
+                            {
+                                _SelectedFreqs.Add((obj as Freq));
+                            }
+                        }
+                    }
+                }                    
+            });
+        }
+
+        private RelayCommand _FreqsSelectionChangedCommand;
+        public RelayCommand FreqsSelectionChangedCommand
+        {
+            get
+            {
+                return _FreqsSelectionChangedCommand;
+            }
+            set
+            {
+                _FreqsSelectionChangedCommand = value;
+            }
         }
 
         private void SelectedFreqs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -70,6 +99,49 @@ namespace FreqMngr.ViewModels
             else
                 Debug.WriteLine("Freqs selected == null");
         }
+
+        private List<Freq> _FreqsClipboard = null;
+
+        private RelayCommand _CutFreqsCommand;
+        public RelayCommand CutFreqsCommand
+        {
+            get
+            {
+                return _CutFreqsCommand ?? (_CutFreqsCommand = new RelayCommand(
+                    x =>
+                    {
+                        CutFreqs();
+                    },
+                    x =>
+                    {
+                        return CanCutFreqs();
+                    }));
+
+            }
+        }
+
+        private bool CanCutFreqs()
+        {
+            if (SelectedFreqs != null && SelectedFreqs.Count > 0)
+                return true;
+            return false;
+        }
+
+
+        private RelayCommand _NewFreqCommand;
+        public RelayCommand NewFreqCommand
+        {
+            get
+            {
+                return _NewFreqCommand ?? (_NewFreqCommand = new RelayCommand(
+                    x =>
+                    {
+                        NewFreq();
+                    }));
+
+            }
+        }
+
 
         private RelayCommand _LoadDatabaseCommand;
         public RelayCommand LoadDatabaseCommand
@@ -84,6 +156,18 @@ namespace FreqMngr.ViewModels
             }
         }
 
+        private void CutFreqs()
+        {
+            if (SelectedFreqs!=null)
+                Debug.WriteLine("CutFreqs(): SelectedFreqs.Count==" + SelectedFreqs.Count.ToString());
+            else
+                Debug.WriteLine("CutFreqs(): SelectedFreqs==null");
+        }
+
+        private void NewFreq()
+        {
+            Debug.WriteLine(nameof(NewFreq));
+        }
 
         private async void LoadDatabase()
         {
@@ -109,22 +193,6 @@ namespace FreqMngr.ViewModels
                     foreach (Freq freq in freqs)
                         _Freqs.Add(freq);
                     IsBusy = false;
-                }
-                else if (e.PropertyName == nameof(ActiveFreq))
-                {
-                    if (ActiveFreq != null)
-                    {
-                        Debug.WriteLine("Active Freq: " + ActiveFreq.Name);
-                        if (SelectedFreqs!=null)
-                            Debug.WriteLine("event: SelectedFreqs: " + _SelectedFreqs.Count.ToString());
-                    }
-                }
-                else if (e.PropertyName == nameof(SelectedFreqs))
-                {
-                    if (SelectedFreqs!=null)                    
-                        Debug.WriteLine("Freqs selected count: " + _SelectedFreqs.Count.ToString());                    
-                    else
-                        Debug.WriteLine("Freqs selected == null");
                 }
             }
         }
@@ -230,12 +298,16 @@ namespace FreqMngr.ViewModels
             }
         }
 
-        private ObservableCollection<Freq> _SelectedFreqs = new ObservableCollection<Freq>();
-        public ObservableCollection<Freq> SelectedFreqs
+        private List<Freq> _SelectedFreqs = new List<Freq>();
+        public List<Freq> SelectedFreqs
         {
             get { return _SelectedFreqs; }
             set
             {
+                if (value==null)
+                    Debug.WriteLine("MainWindowViewModel: Set SelectedFreqs = null");
+                else
+                    Debug.WriteLine("MainWindowViewModel: Set SelectedFreqs count = " + value.Count.ToString());
                 _SelectedFreqs = value;
                 OnPropertyChanged(nameof(SelectedFreqs));
             }

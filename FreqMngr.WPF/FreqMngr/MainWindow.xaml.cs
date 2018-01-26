@@ -2,21 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
 
 namespace FreqMngr
 {
@@ -28,7 +16,7 @@ namespace FreqMngr
       
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();                        
         }
 
         #region Old Stuff to remember
