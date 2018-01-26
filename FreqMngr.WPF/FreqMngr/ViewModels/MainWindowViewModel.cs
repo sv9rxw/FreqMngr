@@ -8,6 +8,7 @@ using FreqMngr.Models;
 using FreqMngr.Services;
 using FreqMngr.Commands;
 using System.Windows.Input;
+using System.Diagnostics;
 
 namespace FreqMngr.ViewModels
 {
@@ -56,9 +57,18 @@ namespace FreqMngr.ViewModels
             }
 
             this.PropertyChanged += MainWindowViewModel_PropertyChanged;
-            
+
             //Service.Connect();
             //_Groups = (ObservableCollection<Group>)Service.GetGroupsTree();       
+            this.SelectedFreqs.CollectionChanged += SelectedFreqs_CollectionChanged;
+        }
+
+        private void SelectedFreqs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (SelectedFreqs!=null)
+                Debug.WriteLine("Freqs selected count: " + _SelectedFreqs.Count.ToString());
+            else
+                Debug.WriteLine("Freqs selected == null");
         }
 
         private RelayCommand _LoadDatabaseCommand;
@@ -73,12 +83,12 @@ namespace FreqMngr.ViewModels
                     }));
             }
         }
-                
+
 
         private async void LoadDatabase()
         {
             IsBusy = true;
-            Service.Connect();            
+            Service.Connect();
             _Groups.Clear();
             List<Group> groupList = await Service.GetGroupsTreeAsync();
             foreach (Group group in groupList)
@@ -92,13 +102,29 @@ namespace FreqMngr.ViewModels
             if (e != null && e.PropertyName != null)
             {
                 if (e.PropertyName == nameof(ActiveGroup))
-                {                    
+                {
                     IsBusy = true;
                     _Freqs.Clear();
                     List<Freq> freqs = await GetAllFreqsAsync(_ActiveGroup);
                     foreach (Freq freq in freqs)
                         _Freqs.Add(freq);
                     IsBusy = false;
+                }
+                else if (e.PropertyName == nameof(ActiveFreq))
+                {
+                    if (ActiveFreq != null)
+                    {
+                        Debug.WriteLine("Active Freq: " + ActiveFreq.Name);
+                        if (SelectedFreqs!=null)
+                            Debug.WriteLine("event: SelectedFreqs: " + _SelectedFreqs.Count.ToString());
+                    }
+                }
+                else if (e.PropertyName == nameof(SelectedFreqs))
+                {
+                    if (SelectedFreqs!=null)                    
+                        Debug.WriteLine("Freqs selected count: " + _SelectedFreqs.Count.ToString());                    
+                    else
+                        Debug.WriteLine("Freqs selected == null");
                 }
             }
         }
@@ -117,21 +143,21 @@ namespace FreqMngr.ViewModels
             List<Freq> list = new List<Freq>();
 
             list = (List<Freq>)Service.GetFreqs(group);
-            
-            foreach(Group childGroup in group.Children)
+
+            foreach (Group childGroup in group.Children)
             {
                 List<Freq> childFreqList = (List<Freq>)GetAllFreqs(childGroup);
                 list.AddRange(childFreqList);
             }
-                        
-            return list;                        
+
+            return list;
         }
 
 
         private void TestPrintGroups(IEnumerable<Group> groupList)
         {
-            foreach(Group group in groupList)            
-                Console.WriteLine(group.ToString());            
+            foreach (Group group in groupList)
+                Console.WriteLine(group.ToString());
         }
 
         private IDbService _Service = null;
@@ -201,6 +227,34 @@ namespace FreqMngr.ViewModels
 
                 _ActiveGroup = value;
                 OnPropertyChanged(nameof(ActiveGroup));
+            }
+        }
+
+        private ObservableCollection<Freq> _SelectedFreqs = new ObservableCollection<Freq>();
+        public ObservableCollection<Freq> SelectedFreqs
+        {
+            get { return _SelectedFreqs; }
+            set
+            {
+                _SelectedFreqs = value;
+                OnPropertyChanged(nameof(SelectedFreqs));
+            }
+        }
+
+        private Freq _ActiveFreq = null;
+        public Freq ActiveFreq
+        {
+            get
+            {
+                return _ActiveFreq;
+            }
+            set
+            {
+                if (value == _ActiveFreq)
+                    return;
+
+                _ActiveFreq = value;
+                OnPropertyChanged(nameof(ActiveFreq));
             }
         }
 
