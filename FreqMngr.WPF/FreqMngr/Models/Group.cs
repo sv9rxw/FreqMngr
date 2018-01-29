@@ -20,6 +20,34 @@ namespace FreqMngr.Models
             }
         }
 
+        private bool _IsEditing = false;
+        public bool IsEditing
+        {
+            get { return _IsEditing; }
+            set
+            {
+                if (value == _IsEditing)
+                    return;
+
+                _IsEditing = value;
+                OnPropertyChanged(nameof(IsEditing));
+            }
+        }
+
+        private bool _IsSelected = false;
+        public bool IsSelected
+        {
+            get { return _IsSelected; }
+            set
+            {
+                if (value == _IsSelected)
+                    return;
+
+                _IsSelected = value;
+                OnPropertyChanged(nameof(IsSelected));
+            }
+        }
+
         private bool _Expanded = true;
         public bool Expanded
         {

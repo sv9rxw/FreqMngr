@@ -16,17 +16,18 @@
         Title="FreqMngr" Height="800" Width="1024">
     <Window.Resources>
         <ViewModels:MainWindowViewModel x:Key="MainWindowViewModelDataSource" d:IsDataSource="True"/>
-
-
     </Window.Resources>
-    
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Closing">
-            <i:InvokeCommandAction Command="{Binding CloseDatabaseCommand}"/>
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
+
+
 
     <DockPanel x:Name="PnlMain" DataContext="{Binding Source={StaticResource MainWindowViewModelDataSource}}" >
+
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Closing">
+                <i:InvokeCommandAction Command="{Binding CloseDatabaseCommand}"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+
         <ToolBar x:Name="BarMain" DockPanel.Dock="Top">
 
             <Button x:Name="BtnLoad" ToolTip="Load frequency database"
@@ -91,6 +92,12 @@
                 Grid.Column="0" 
                 ItemsSource="{Binding Groups}" 
                 helpers:TreeViewAttached.TreeViewSelectedItem="{Binding ActiveGroup, Mode=TwoWay}">
+
+                <TreeView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem x:Name="MnuGroupNew" Header="New" Command="{Binding NewGroupCommand}" />
+                    </ContextMenu>
+                </TreeView.ContextMenu>
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type models:Group}">
                         <TextBlock Text="{Binding Name}"/>
@@ -102,6 +109,7 @@
                         <Setter Property="IsExpanded" Value="{Binding Expanded}"/>
                     </Style>
                 </TreeView.ItemContainerStyle>
+
             </TreeView>
 
             <xcdg:DataGridControl x:Name="DataGridFreqs" Grid.Column="1" 
@@ -115,7 +123,7 @@
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate>
-                                    <Border BorderBrush="Cyan" Background="Aqua">
+                                    <Border BorderBrush="#FF92CBCB" Background="LightCyan">
                                         <ContentPresenter Content="{TemplateBinding ToolTip.Content}"/>
                                     </Border>
                                 </ControlTemplate>
@@ -139,43 +147,54 @@
                         <MenuItem x:Name="MnuEdit" Header="Edit" />
                         <Separator />
                         <MenuItem x:Name="MnuCut" Header="Cut" Command="{Binding CutFreqsCommand}" />
-                        <MenuItem x:Name="MnuCopy" Header="Copy" />
-                        <MenuItem x:Name="MnuPaste" Header="Paste" />
+                        <MenuItem x:Name="MnuCopy" Header="Copy" Command="{Binding CopyFreqsCommand}" />
+                        <MenuItem x:Name="MnuPaste" Header="Paste" Command="{Binding PasteFreqsCommand}" />
                         <Separator />
                         <MenuItem x:Name="MnuDelete" Header="Delete" />
                     </ContextMenu>
                 </xcdg:DataGridControl.ContextMenu>
-                                                
+
 
                 <xcdg:DataGridControl.Columns>
-                    <!--Preconfigure the OrderID Column of the grid with CellValidationRule. -->                    
+                    <!--Preconfigure the OrderID Column of the grid with CellValidationRule. -->
                     <xcdg:Column FieldName="Frequency" Title="kHz" IsMainColumn="True" CellHorizontalContentAlignment="Right"></xcdg:Column>
-                        <xcdg:Column FieldName="Name" Title="Name"></xcdg:Column>
-                    <xcdg:Column FieldName="QSL" Title="QSL"></xcdg:Column>
-                    <xcdg:Column FieldName="Modulation" Title="Modulation">
-                        <!--
+                    <xcdg:Column FieldName="Name" Title="Name"></xcdg:Column>
+                    <xcdg:Column FieldName="QSL" Title="QSL">
                         <xcdg:Column.CellEditor>
                             <xcdg:CellEditor>
                                 <xcdg:CellEditor.EditTemplate>
                                     <DataTemplate>
-                                        <ComboBox 
-                                          ItemsSource="{Binding Path=Modulations, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                          SelectedValue="{xcdg:CellEditorBinding}" IsEditable="True" Foreground="Black" IsSynchronizedWithCurrentItem="True" />
+                                        <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=xcdg:DataGridControl}, Path=DataContext.QSLs}"
+                                                  SelectedValue="{xcdg:CellEditorBinding}" 
+                                                  IsEditable="True"
+                                                  IsSynchronizedWithCurrentItem="True" />
                                     </DataTemplate>
                                 </xcdg:CellEditor.EditTemplate>
                             </xcdg:CellEditor>
                         </xcdg:Column.CellEditor>
-                        -->
+                    </xcdg:Column>
+                    <xcdg:Column FieldName="Modulation" Title="Modulation">
+                        <xcdg:Column.CellEditor>
+                            <xcdg:CellEditor>
+                                <xcdg:CellEditor.EditTemplate>
+                                    <DataTemplate>
+                                        <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=xcdg:DataGridControl}, Path=DataContext.Modulations}"
+                                                  SelectedValue="{xcdg:CellEditorBinding}" 
+                                                  IsEditable="True"
+                                                  IsSynchronizedWithCurrentItem="True" />
+                                    </DataTemplate>
+                                </xcdg:CellEditor.EditTemplate>
+                            </xcdg:CellEditor>
+                        </xcdg:Column.CellEditor>
                     </xcdg:Column>
                     <xcdg:Column FieldName="ModulationType" Title="Modulation Type"></xcdg:Column>
                     <xcdg:Column FieldName="Protocol" Title="Protocol"></xcdg:Column>
                     <xcdg:Column FieldName="Bandwidth" Title="Bandwidth (kHz)"></xcdg:Column>
                     <xcdg:Column FieldName="Country" Title="Country"></xcdg:Column>
-                    <xcdg:Column FieldName="User" Title="User"></xcdg:Column>
+                    <xcdg:Column FieldName="Service" Title="User"></xcdg:Column>
                     <xcdg:Column FieldName="Coordinates" Title="Coordinates"></xcdg:Column>
                     <xcdg:Column FieldName="Description" Title="Description"></xcdg:Column>
-                    <xcdg:Column FieldName="References" Title="References"></xcdg:Column>
-
+                    <xcdg:Column FieldName="URLs" Title="URLs"></xcdg:Column>
                 </xcdg:DataGridControl.Columns>
             </xcdg:DataGridControl>
 

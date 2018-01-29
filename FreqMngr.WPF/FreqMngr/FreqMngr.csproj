@@ -51,6 +51,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="MvvmDialogs, Version=5.1.0.0, Culture=neutral, PublicKeyToken=3d3b9708589bc73e, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmDialogs.5.1.0\lib\net45\MvvmDialogs.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -126,6 +130,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -161,6 +166,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>FreqDB.mdf</DependentUpon>
     </Content>
+    <Resource Include="Resources\Copy_16x.png" />
+    <Resource Include="Resources\Cut_16x.png" />
+    <Resource Include="Resources\Paste_16x.png" />
+    <Resource Include="Resources\ConnectToDatabase_16x.png" />
+    <Resource Include="Resources\DatabaseRun_16x.png" />
+    <Resource Include="Resources\DatabaseStop_16x.png" />
     <Resource Include="Resources\Database_16x.png" />
   </ItemGroup>
   <ItemGroup />

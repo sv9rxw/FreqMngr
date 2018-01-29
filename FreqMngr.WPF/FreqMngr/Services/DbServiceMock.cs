@@ -114,5 +114,20 @@ namespace FreqMngr.Services
         {
             throw new NotImplementedException();
         }
+
+        public bool UpdateFreq(Freq freq)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool InsertFreq(Freq freq)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> InsertFreqAsync(Freq freq)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

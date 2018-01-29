@@ -10,10 +10,19 @@ using FreqMngr.Commands;
 using System.Windows.Input;
 using System.Diagnostics;
 
+using MvvmDialogs;
+using MvvmDialogs.FrameworkDialogs;
+using MvvmDialogs.DialogFactories;
+using MvvmDialogs.DialogTypeLocators;
+using MvvmDialogs.Logging;
+
 namespace FreqMngr.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
+        private enum ClipboardType : byte {Cut = 1, Copy };
+        
+
         private String _DbFilePath = "FreqDB.mdf";
         public String DbFilePath
         {
@@ -30,7 +39,7 @@ namespace FreqMngr.ViewModels
                 OnPropertyChanged(nameof(DbFilePath));
             }
         }
-        
+
         private IDbService Service { get; set; }
 
         private bool _IsBusy = false;
@@ -46,6 +55,8 @@ namespace FreqMngr.ViewModels
                 OnPropertyChanged(nameof(IsBusy));
             }
         }
+
+        public ObservableCollection<String> QSLs { get; set; } = new ObservableCollection<String>() { "True", "False" };        
 
         /// <summary>
         /// List of all available Modulations to be used in Combo Boxes
@@ -163,14 +174,25 @@ namespace FreqMngr.ViewModels
         }
 
         private List<Freq> _FreqsClipboard = null;
+        private ClipboardType _CliboardType = ClipboardType.Cut;
 
         #region Commands
+
         public RelayCommand LoadDatabaseCommand { get; set; }
-        private RelayCommand CloseDatabaseCommand { get; set; }
+        public RelayCommand CloseDatabaseCommand { get; set; }
+        public RelayCommand NewGroupCommand { get; set; }
+        public RelayCommand EditGroupCommand { get; set; }
+        public RelayCommand DeleteGroupCommand { get; set; }
+        public RelayCommand GroupSwitchToEditingMode { get; private set; }
         public RelayCommand FreqsSelectionChangedCommand { get; set; }
         public RelayCommand SaveFreqCommand { get; set; }
         public RelayCommand NewFreqCommand { get; set; }
         public RelayCommand CutFreqsCommand { get; set; }
+        public RelayCommand CopyFreqsCommand { get; set; }
+        public RelayCommand PasteFreqsCommand { get; set; }
+
+
+
         #endregion
 
         #region Constructor and Event
@@ -183,7 +205,7 @@ namespace FreqMngr.ViewModels
                 String folderPath = System.IO.Directory.GetCurrentDirectory();
                 //_DbFilePath = folderPath + @"\FreqDB.mdf";
                 //_DbFilePath = @"..\..\FreqDB.mdf";
-                _DbFilePath = @"C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\FreqDb.mdf";
+                _DbFilePath = @"C:\Users\Dirty Harry\Source\github\FreqMngr.WPF\FreqMngr\FreqDb.mdf";
                 System.Windows.MessageBox.Show(_DbFilePath);
                 Service = new DbService(_DbFilePath);
             }
@@ -191,6 +213,9 @@ namespace FreqMngr.ViewModels
             this.PropertyChanged += MainWindowViewModel_PropertyChanged;
 
             LoadDatabaseCommand = new RelayCommand((item) => { LoadDatabase(); }, (item) => { return true; });
+            CloseDatabaseCommand = new RelayCommand((item) => { CloseDatabase(); });
+
+
 
             FreqsSelectionChangedCommand = new RelayCommand((item) =>
             {
@@ -209,13 +234,17 @@ namespace FreqMngr.ViewModels
                             }
                         }
                     }
-                }                    
+                }
             });
 
-            SaveFreqCommand = new RelayCommand((item) => { SaveActiveFreq(); }, (item) => { return CanSaveActiveFreq(); });
-            CloseDatabaseCommand = new RelayCommand((item) => { CloseDatabase(); });
-            CutFreqsCommand = new RelayCommand((item) => { CutFreqs(); }, (item) => { return CanCutFreqs(); });
+
             NewFreqCommand = new RelayCommand((item) => { NewFreq(); }, (item => { return true; }));
+            SaveFreqCommand = new RelayCommand((item) => { SaveActiveFreq(); }, (item) => { return CanSaveActiveFreq(); });
+            CutFreqsCommand = new RelayCommand((item) => { CutFreqs(); }, (item) => { return CanCutFreqs(); });
+            CopyFreqsCommand = new RelayCommand((item) => { CopyFreqs(); }, (item) => { return CanCopyFreqs(); });
+            PasteFreqsCommand = new RelayCommand((item) => { PasteFreqs(); }, (item) => { return CanPasteFreqs(); });
+            GroupSwitchToEditingMode = new RelayCommand((item) => { _ActiveGroup.IsEditing = !_ActiveGroup.IsEditing;  } );        
+
         }
 
         private async void MainWindowViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -235,7 +264,6 @@ namespace FreqMngr.ViewModels
         }
         #endregion
 
-
         #region Db Load and Close Methods
         private async void LoadDatabase()
         {
@@ -254,6 +282,8 @@ namespace FreqMngr.ViewModels
             foreach (Group group in groupList)
                 _Groups.Add(group);
 
+            RootGroup = groupList[0];
+
             IsBusy = false;
         }
 
@@ -265,6 +295,14 @@ namespace FreqMngr.ViewModels
 
         #endregion
 
+        #region Groups New, Edit and Delete Methods
+
+        private void EditGroup()
+        {
+            
+        }
+
+        #endregion
 
         #region Cut, Copy and Paste Methods
         private bool CanCutFreqs()
@@ -273,16 +311,96 @@ namespace FreqMngr.ViewModels
                 return true;
             return false;
         }
-                                     
+
         private void CutFreqs()
         {
-            if (SelectedFreqs != null && SelectedFreqs.Count>0) 
+            if (SelectedFreqs != null && SelectedFreqs.Count > 0)
             {
                 _FreqsClipboard = new List<Freq>();
                 foreach (Freq freq in SelectedFreqs)
                 {
                     _FreqsClipboard.Add(freq);
                 }
+                _CliboardType = ClipboardType.Cut;
+            }
+        }
+
+        private bool CanCopyFreqs()
+        {
+            if (SelectedFreqs != null && SelectedFreqs.Count > 0)
+                return true;
+            return false;
+        }
+
+        private void CopyFreqs()
+        {
+            if (SelectedFreqs!=null && SelectedFreqs.Count>0)
+            {
+                _FreqsClipboard = new List<Freq>();
+                foreach (Freq freq in SelectedFreqs)
+                {                    
+                    Freq newFreq = freq.Clone();
+                    _FreqsClipboard.Add(newFreq);                                                            
+                }
+                _CliboardType = ClipboardType.Copy;
+            }
+        }
+
+        private bool CanPasteFreqs()
+        {
+            if (_FreqsClipboard == null || _FreqsClipboard.Count == 0 || ActiveGroup == null)
+                return false;
+            return true;
+        }
+
+        private Task<bool> PasteFreqsAsync()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                if (_FreqsClipboard != null)
+                {
+                    foreach (Freq freq in _FreqsClipboard)
+                    {
+                        freq.Parent = _ActiveGroup;
+                        if (_CliboardType == ClipboardType.Cut)
+                        {
+                            bool status = Service.UpdateFreq(freq);
+                        }
+                        else if (_CliboardType == ClipboardType.Copy)
+                        {
+                            bool status = Service.InsertFreq(freq);
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("SQL insert freq");
+                        }
+                    }
+                    _FreqsClipboard.Clear();
+                    _FreqsClipboard = null;
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        private async void PasteFreqs()
+        {
+            if (_FreqsClipboard != null)
+            {
+                IsBusy = true;
+                bool status = await PasteFreqsAsync();
+                if (status == false)
+                {
+                    System.Windows.MessageBox.Show("Error: cannot paste frequencies");
+                    return;
+                }
+
+                // Refresh frequencies DataGrid
+                _Freqs.Clear();
+                List<Freq> freqs = await Service.GetAllDescendantFreqsAsync(_ActiveGroup);
+                foreach (Freq freq in freqs)
+                    _Freqs.Add(freq);
+                IsBusy = false;                
             }
         }
 

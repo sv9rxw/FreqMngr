@@ -22,5 +22,8 @@ namespace FreqMngr.Services
         void Disconnect();
 
         Task<bool> UpdateFreqAsync(Freq freq);
+        bool UpdateFreq(Freq freq);
+        bool InsertFreq(Freq freq);
+        Task<bool> InsertFreqAsync(Freq freq);
     }
 }

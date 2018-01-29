@@ -18,7 +18,7 @@ namespace FreqMngr
       
         public MainWindow()
         {
-            InitializeComponent();                                                                     
+            InitializeComponent();
         }
 
         private void RowEditEndedWorkaroundHandler(object sender, RoutedEventArgs e)

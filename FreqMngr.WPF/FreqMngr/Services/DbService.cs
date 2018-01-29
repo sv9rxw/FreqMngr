@@ -252,7 +252,7 @@ namespace FreqMngr.Services
             });
         }
 
-        private bool UpdateFreq(Freq freq)
+        public bool UpdateFreq(Freq freq)
         {
             //TODO : create save freq SQL query
             //String updateQuery = "UPDATE TableFreqs SET Frequency = '2222',Name = 'Malakia Updated' WHERE Id = 1";
@@ -316,6 +316,77 @@ namespace FreqMngr.Services
             return Task.Factory.StartNew(() =>{ return UpdateFreq(freq); });
         }
 
+        public bool InsertFreq(Freq freq)
+        {
+            if (freq == null)
+                return false;
+
+            //"INSERT INTO dbo.SMS_PW (id,username,password,email) VALUES (@id,@username,@password, @email)";
+
+            String insertQuery = "INSERT INTO TableFreqs (" +
+                TABLEFREQS_CLM_FREQUENCY + "," +
+                TABLEFREQS_CLM_NAME + "," +
+                TABLEFREQS_CLM_PARENTID + "," +
+                TABLEFREQS_CLM_MODULATION + "," +
+                TABLEFREQS_CLM_MODULATIONTYPE + "," +
+                TABLEFREQS_CLM_PROTOCOL + "," +
+                TABLEFREQS_CLM_BANDWIDTH + "," +
+                TABLEFREQS_CLM_COUNTRY + "," +
+                TABLEFREQS_CLM_SERVICE + "," +
+                TABLEFREQS_CLM_DESCRIPTION + "," +
+                TABLEFREQS_CLM_URLs + "," +
+                TABLEFREQS_CLM_QSL + "," +
+                TABLEFREQS_CLM_COORDINATES + ")" +
+                " VALUES (" +
+                TABLEFREQS_PARAM_FREQUENCY + "," +
+                TABLEFREQS_PARAM_NAME + "," +
+                TABLEFREQS_PARAM_PARENTID + "," +
+                TABLEFREQS_PARAM_MODULATION + "," +
+                TABLEFREQS_PARAM_MODULATIONTYPE + "," +
+                TABLEFREQS_PARAM_PROTOCOL + "," +
+                TABLEFREQS_PARAM_BANDWIDTH + "," +
+                TABLEFREQS_PARAM_COUNTRY + "," +
+                TABLEFREQS_PARAM_SERVICE + "," +
+                TABLEFREQS_PARAM_DESCRIPTION + "," +
+                TABLEFREQS_PARAM_URLS + "," +
+                TABLEFREQS_PARAM_QSL + "," +
+                TABLEFREQS_PARAM_COORDINATES + ")";
+
+            SqlCommand cmd = new SqlCommand(insertQuery, _SqlConnection);            
+            cmd.Parameters.Add(TABLEFREQS_PARAM_FREQUENCY, SqlDbType.Float).Value = freq.Frequency;
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_NAME, freq.Name);
+            cmd.Parameters.Add(TABLEFREQS_PARAM_PARENTID, SqlDbType.Int).Value = freq.Parent.Id;
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_MODULATION, freq.Modulation);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_MODULATIONTYPE, freq.ModulationType);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_PROTOCOL, freq.Protocol);
+            cmd.Parameters.Add(TABLEFREQS_PARAM_BANDWIDTH, SqlDbType.Float).Value = freq.Bandwidth;
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_COUNTRY, freq.Country);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_SERVICE, freq.Service);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_DESCRIPTION, freq.Description);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_URLS, freq.URLs);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_QSL, freq.QSL);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_COORDINATES, freq.Coordinates);
+
+            int rows = 0;
+            try
+            {
+                rows = cmd.ExecuteNonQuery();
+            }
+            catch (Exception expt)
+            {
+                Debug.WriteLine("Rows affected = " + rows.ToString() + " Expt: " + expt.Message);
+                return false;
+            }
+
+            Debug.WriteLine("Rows affected = " + rows.ToString());
+            return true;
+        }
+
+        public Task<bool> InsertFreqAsync(Freq freq)
+        {
+            return Task.Factory.StartNew(() => { return InsertFreq(freq); });
+        }
+
         public List<string> GetModulations()
         {
             List<String> modList = new List<String>();
@@ -337,5 +408,7 @@ namespace FreqMngr.Services
         {
             return Task.Factory.StartNew(() => { return GetModulations(); });
         }
+
+
     }
 }
