@@ -1,10 +1,12 @@
-﻿using System;
+﻿using FreqMngr.ViewModels;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+
 
 namespace FreqMngr
 {
@@ -16,7 +18,19 @@ namespace FreqMngr
       
         public MainWindow()
         {
-            InitializeComponent();                        
+            InitializeComponent();                                                                     
+        }
+
+        private void RowEditEndedWorkaroundHandler(object sender, RoutedEventArgs e)
+        {
+            if (sender != null)
+            {
+                var viewModel = (MainWindowViewModel)this.GridMain.DataContext;
+
+                if (viewModel.SaveFreqCommand.CanExecute(null))
+                    viewModel.SaveFreqCommand.Execute(null);
+
+            }
         }
 
         #region Old Stuff to remember
@@ -51,6 +65,5 @@ namespace FreqMngr
         //    e.Handled = !regex.IsMatch((sender as TextBox).Text.Insert((sender as TextBox).SelectionStart, e.Text));
         //}
         #endregion
-
     }
 }

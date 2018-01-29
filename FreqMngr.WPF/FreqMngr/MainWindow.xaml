@@ -19,16 +19,32 @@
 
 
     </Window.Resources>
+    
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding CloseDatabaseCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <DockPanel x:Name="PnlMain" DataContext="{Binding Source={StaticResource MainWindowViewModelDataSource}}" >
         <ToolBar x:Name="BarMain" DockPanel.Dock="Top">
 
             <Button x:Name="BtnLoad" ToolTip="Load frequency database"
                     Command="{Binding LoadDatabaseCommand}">
-                <Image Width="16" Source="Resources/Database_16x.png" ></Image>
+                <Image Width="16" Source="Resources/DatabaseRun_16x.png" />
             </Button>
             <Button x:Name="BtnSave" ToolTip="Save changes to database">
-                <Image Width="16" Source="Resources/Save_16x.png" ></Image>
+                <Image Width="16" Source="Resources/Save_16x.png" />
+            </Button>
+            <Separator />
+            <Button x:Name="BtnCut" Command="{Binding CutFreqsCommand}">
+                <Image Width="16" Source="Resources/Cut_16x.png" />
+            </Button>
+            <Button x:Name="BtnCopy">
+                <Image Width="16" Source="Resources/Copy_16x.png" />
+            </Button>
+            <Button x:Name="BtnPaste">
+                <Image Width="16" Source="Resources/Paste_16x.png" />
             </Button>
 
             <TextBlock Text="Showing group: " Margin="50,0,0,0" VerticalAlignment="Center"/>
@@ -46,7 +62,7 @@
                 </xcdg:DataGridCollectionViewSource>
                 <DataTemplate x:Key="FrequencyDataTemplate">
                     <Grid MaxHeight="30"
-               VerticalAlignment="Center">
+                        VerticalAlignment="Center">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition />
@@ -60,6 +76,7 @@
                 </DataTemplate>
                 <Style TargetType="{x:Type xcdg:DataRow}">
                     <Setter Property="ToolTip" Value="{Binding Description}"/>
+                    <EventSetter Event="EditEnded" Handler="RowEditEndedWorkaroundHandler"/>
                 </Style>
             </Grid.Resources>
 
@@ -71,9 +88,9 @@
             </Grid.ColumnDefinitions>
 
             <TreeView x:Name="TreeGroups" 
-                      Grid.Column="0" 
-                      ItemsSource="{Binding Groups}" 
-                      helpers:TreeViewAttached.TreeViewSelectedItem="{Binding ActiveGroup, Mode=TwoWay}">
+                Grid.Column="0" 
+                ItemsSource="{Binding Groups}" 
+                helpers:TreeViewAttached.TreeViewSelectedItem="{Binding ActiveGroup, Mode=TwoWay}">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type models:Group}">
                         <TextBlock Text="{Binding Name}"/>
@@ -88,9 +105,11 @@
             </TreeView>
 
             <xcdg:DataGridControl x:Name="DataGridFreqs" Grid.Column="1" 
-                                           ItemsSource="{Binding Freqs}"
-                                           AutoCreateColumns="False"                                         
-                                           SelectedItem="{Binding ActiveFreq}" >
+                                        ItemsSource="{Binding Freqs}"
+                                        AutoCreateColumns="False"                                         
+                                        SelectedItem="{Binding ActiveFreq}"
+                                        UpdateSourceTrigger="CellContentChanged">
+
                 <xcdg:DataGridControl.Resources>
                     <Style TargetType="{x:Type ToolTip}">
                         <Setter Property="Template">
@@ -119,20 +138,19 @@
                         <MenuItem x:Name="MnuNew" Header="New" Command="{Binding NewFreqCommand}" />
                         <MenuItem x:Name="MnuEdit" Header="Edit" />
                         <Separator />
-                        <MenuItem x:Name="MnuCut" Header="Cut" Command="{Binding CutFreqsCommand}"/>
+                        <MenuItem x:Name="MnuCut" Header="Cut" Command="{Binding CutFreqsCommand}" />
                         <MenuItem x:Name="MnuCopy" Header="Copy" />
                         <MenuItem x:Name="MnuPaste" Header="Paste" />
                         <Separator />
                         <MenuItem x:Name="MnuDelete" Header="Delete" />
                     </ContextMenu>
                 </xcdg:DataGridControl.ContextMenu>
+                                                
 
                 <xcdg:DataGridControl.Columns>
-                    <!--Preconfigure the OrderID Column of the grid with CellValidationRule. -->
-                    <xcdg:Column FieldName="Frequency" Title="Frequency (kHz)" IsMainColumn="True">
-
-                    </xcdg:Column>
-                    <xcdg:Column FieldName="Name" Title="Name"></xcdg:Column>
+                    <!--Preconfigure the OrderID Column of the grid with CellValidationRule. -->                    
+                    <xcdg:Column FieldName="Frequency" Title="kHz" IsMainColumn="True" CellHorizontalContentAlignment="Right"></xcdg:Column>
+                        <xcdg:Column FieldName="Name" Title="Name"></xcdg:Column>
                     <xcdg:Column FieldName="QSL" Title="QSL"></xcdg:Column>
                     <xcdg:Column FieldName="Modulation" Title="Modulation">
                         <!--

@@ -89,5 +89,30 @@ namespace FreqMngr.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<Freq>> GetAllDescendantFreqsAsync(Group group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateFreqAsync(Freq freq)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Disconnect()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<string> GetModulations()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<string>> GetModulationsAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

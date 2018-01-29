@@ -30,6 +30,8 @@ namespace FreqMngr.ViewModels
                 OnPropertyChanged(nameof(DbFilePath));
             }
         }
+        
+        private IDbService Service { get; set; }
 
         private bool _IsBusy = false;
         public bool IsBusy
@@ -45,196 +47,26 @@ namespace FreqMngr.ViewModels
             }
         }
 
-        public MainWindowViewModel()
+        /// <summary>
+        /// List of all available Modulations to be used in Combo Boxes
+        /// </summary>
+        private ObservableCollection<String> _Modulations = new ObservableCollection<String>();
+        public ObservableCollection<String> Modulations
         {
-            if (IsInDesignMode)
-                Service = new DbServiceMock("designmode");
-            else
-            {
-                String folderPath = System.IO.Directory.GetCurrentDirectory();
-                _DbFilePath = folderPath + @"\FreqDB.mdf";
-                Service = new DbService(_DbFilePath);
-            }
-
-            this.PropertyChanged += MainWindowViewModel_PropertyChanged;
-
-            this._FreqsSelectionChangedCommand = new RelayCommand((item) =>
-            {
-                _SelectedFreqs.Clear();
-
-                IList<object> list = (IList<object>)item;
-                if (list != null)
-                {
-                    foreach (object obj in list)
-                    {
-                        if (obj != null)
-                        {
-                            if (obj is Freq)
-                            {
-                                _SelectedFreqs.Add((obj as Freq));
-                            }
-                        }
-                    }
-                }                    
-            });
-        }
-
-        private RelayCommand _FreqsSelectionChangedCommand;
-        public RelayCommand FreqsSelectionChangedCommand
-        {
-            get
-            {
-                return _FreqsSelectionChangedCommand;
-            }
+            get { return _Modulations; }
             set
             {
-                _FreqsSelectionChangedCommand = value;
+                if (value == _Modulations)
+                    return;
+
+                _Modulations = value;
+                OnPropertyChanged(nameof(Modulations));
             }
         }
 
-        private void SelectedFreqs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (SelectedFreqs!=null)
-                Debug.WriteLine("Freqs selected count: " + _SelectedFreqs.Count.ToString());
-            else
-                Debug.WriteLine("Freqs selected == null");
-        }
-
-        private List<Freq> _FreqsClipboard = null;
-
-        private RelayCommand _CutFreqsCommand;
-        public RelayCommand CutFreqsCommand
-        {
-            get
-            {
-                return _CutFreqsCommand ?? (_CutFreqsCommand = new RelayCommand(
-                    x =>
-                    {
-                        CutFreqs();
-                    },
-                    x =>
-                    {
-                        return CanCutFreqs();
-                    }));
-
-            }
-        }
-
-        private bool CanCutFreqs()
-        {
-            if (SelectedFreqs != null && SelectedFreqs.Count > 0)
-                return true;
-            return false;
-        }
-
-
-        private RelayCommand _NewFreqCommand;
-        public RelayCommand NewFreqCommand
-        {
-            get
-            {
-                return _NewFreqCommand ?? (_NewFreqCommand = new RelayCommand(
-                    x =>
-                    {
-                        NewFreq();
-                    }));
-
-            }
-        }
-
-
-        private RelayCommand _LoadDatabaseCommand;
-        public RelayCommand LoadDatabaseCommand
-        {
-            get
-            {
-                return _LoadDatabaseCommand ?? (_LoadDatabaseCommand = new RelayCommand(
-                    x =>
-                    {
-                        LoadDatabase();
-                    }));
-            }
-        }
-
-        private void CutFreqs()
-        {
-            if (SelectedFreqs!=null)
-                Debug.WriteLine("CutFreqs(): SelectedFreqs.Count==" + SelectedFreqs.Count.ToString());
-            else
-                Debug.WriteLine("CutFreqs(): SelectedFreqs==null");
-        }
-
-        private void NewFreq()
-        {
-            Debug.WriteLine(nameof(NewFreq));
-        }
-
-        private async void LoadDatabase()
-        {
-            IsBusy = true;
-            Service.Connect();
-            _Groups.Clear();
-            List<Group> groupList = await Service.GetGroupsTreeAsync();
-            foreach (Group group in groupList)
-                _Groups.Add(group);
-            IsBusy = false;
-        }
-
-
-        private async void MainWindowViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e != null && e.PropertyName != null)
-            {
-                if (e.PropertyName == nameof(ActiveGroup))
-                {
-                    IsBusy = true;
-                    _Freqs.Clear();
-                    List<Freq> freqs = await GetAllFreqsAsync(_ActiveGroup);
-                    foreach (Freq freq in freqs)
-                        _Freqs.Add(freq);
-                    IsBusy = false;
-                }
-            }
-        }
-
-
-        private Task<List<Freq>> GetAllFreqsAsync(Group group)
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                return (List<Freq>)GetAllFreqs(group);
-            });
-        }
-
-        private IEnumerable<Freq> GetAllFreqs(Group group)
-        {
-            List<Freq> list = new List<Freq>();
-
-            list = (List<Freq>)Service.GetFreqs(group);
-
-            foreach (Group childGroup in group.Children)
-            {
-                List<Freq> childFreqList = (List<Freq>)GetAllFreqs(childGroup);
-                list.AddRange(childFreqList);
-            }
-
-            return list;
-        }
-
-
-        private void TestPrintGroups(IEnumerable<Group> groupList)
-        {
-            foreach (Group group in groupList)
-                Console.WriteLine(group.ToString());
-        }
-
-        private IDbService _Service = null;
-        private IDbService Service
-        {
-            get { return _Service; }
-            set { _Service = value; }
-        }
-
+        /// <summary>
+        /// List of all Groups in Database to be displayed in TreeView
+        /// </summary>
         private ObservableCollection<Group> _Groups = new ObservableCollection<Group>();
         public ObservableCollection<Group> Groups
         {
@@ -246,24 +78,6 @@ namespace FreqMngr.ViewModels
 
                 _Groups = value;
                 OnPropertyChanged(nameof(Groups));
-            }
-        }
-
-
-        private ObservableCollection<Freq> _Freqs = new ObservableCollection<Freq>();
-        public ObservableCollection<Freq> Freqs
-        {
-            get
-            {
-                return _Freqs;
-            }
-            set
-            {
-                if (value == _Freqs)
-                    return;
-
-                _Freqs = value;
-                OnPropertyChanged(nameof(Freqs));
             }
         }
 
@@ -298,18 +112,21 @@ namespace FreqMngr.ViewModels
             }
         }
 
-        private List<Freq> _SelectedFreqs = new List<Freq>();
-        public List<Freq> SelectedFreqs
+
+        private ObservableCollection<Freq> _Freqs = new ObservableCollection<Freq>();
+        public ObservableCollection<Freq> Freqs
         {
-            get { return _SelectedFreqs; }
+            get
+            {
+                return _Freqs;
+            }
             set
             {
-                if (value==null)
-                    Debug.WriteLine("MainWindowViewModel: Set SelectedFreqs = null");
-                else
-                    Debug.WriteLine("MainWindowViewModel: Set SelectedFreqs count = " + value.Count.ToString());
-                _SelectedFreqs = value;
-                OnPropertyChanged(nameof(SelectedFreqs));
+                if (value == _Freqs)
+                    return;
+
+                _Freqs = value;
+                OnPropertyChanged(nameof(Freqs));
             }
         }
 
@@ -329,6 +146,169 @@ namespace FreqMngr.ViewModels
                 OnPropertyChanged(nameof(ActiveFreq));
             }
         }
+
+        private List<Freq> _SelectedFreqs = new List<Freq>();
+        public List<Freq> SelectedFreqs
+        {
+            get { return _SelectedFreqs; }
+            set
+            {
+                if (value == null)
+                    Debug.WriteLine("MainWindowViewModel: Set SelectedFreqs = null");
+                else
+                    Debug.WriteLine("MainWindowViewModel: Set SelectedFreqs count = " + value.Count.ToString());
+                _SelectedFreqs = value;
+                OnPropertyChanged(nameof(SelectedFreqs));
+            }
+        }
+
+        private List<Freq> _FreqsClipboard = null;
+
+        #region Commands
+        public RelayCommand LoadDatabaseCommand { get; set; }
+        private RelayCommand CloseDatabaseCommand { get; set; }
+        public RelayCommand FreqsSelectionChangedCommand { get; set; }
+        public RelayCommand SaveFreqCommand { get; set; }
+        public RelayCommand NewFreqCommand { get; set; }
+        public RelayCommand CutFreqsCommand { get; set; }
+        #endregion
+
+        #region Constructor and Event
+        public MainWindowViewModel()
+        {
+            if (IsInDesignMode)
+                Service = new DbServiceMock("designmode");
+            else
+            {
+                String folderPath = System.IO.Directory.GetCurrentDirectory();
+                //_DbFilePath = folderPath + @"\FreqDB.mdf";
+                //_DbFilePath = @"..\..\FreqDB.mdf";
+                _DbFilePath = @"C:\Users\Dirty Harry\Source\Repos\FreqMngr\FreqMngr.WPF\FreqMngr\FreqDb.mdf";
+                System.Windows.MessageBox.Show(_DbFilePath);
+                Service = new DbService(_DbFilePath);
+            }
+
+            this.PropertyChanged += MainWindowViewModel_PropertyChanged;
+
+            LoadDatabaseCommand = new RelayCommand((item) => { LoadDatabase(); }, (item) => { return true; });
+
+            FreqsSelectionChangedCommand = new RelayCommand((item) =>
+            {
+                _SelectedFreqs.Clear();
+
+                IList<object> list = (IList<object>)item;
+                if (list != null)
+                {
+                    foreach (object obj in list)
+                    {
+                        if (obj != null)
+                        {
+                            if (obj is Freq)
+                            {
+                                _SelectedFreqs.Add((obj as Freq));
+                            }
+                        }
+                    }
+                }                    
+            });
+
+            SaveFreqCommand = new RelayCommand((item) => { SaveActiveFreq(); }, (item) => { return CanSaveActiveFreq(); });
+            CloseDatabaseCommand = new RelayCommand((item) => { CloseDatabase(); });
+            CutFreqsCommand = new RelayCommand((item) => { CutFreqs(); }, (item) => { return CanCutFreqs(); });
+            NewFreqCommand = new RelayCommand((item) => { NewFreq(); }, (item => { return true; }));
+        }
+
+        private async void MainWindowViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e != null && e.PropertyName != null)
+            {
+                if (e.PropertyName == nameof(ActiveGroup))
+                {
+                    IsBusy = true;
+                    _Freqs.Clear();
+                    List<Freq> freqs = await Service.GetAllDescendantFreqsAsync(_ActiveGroup);
+                    foreach (Freq freq in freqs)
+                        _Freqs.Add(freq);
+                    IsBusy = false;
+                }
+            }
+        }
+        #endregion
+
+
+        #region Db Load and Close Methods
+        private async void LoadDatabase()
+        {
+            IsBusy = true;
+            Service.Connect();
+
+            //Load modulations
+            _Modulations.Clear();
+            List<String> modList = await Service.GetModulationsAsync();
+            foreach (String mod in modList)
+                _Modulations.Add(mod);
+
+            //Load groups
+            _Groups.Clear();
+            List<Group> groupList = await Service.GetGroupsTreeAsync();
+            foreach (Group group in groupList)
+                _Groups.Add(group);
+
+            IsBusy = false;
+        }
+
+        private void CloseDatabase()
+        {
+            Debug.WriteLine("Closing Database");
+            Service.Disconnect();
+        }
+
+        #endregion
+
+
+        #region Cut, Copy and Paste Methods
+        private bool CanCutFreqs()
+        {
+            if (SelectedFreqs != null && SelectedFreqs.Count > 0)
+                return true;
+            return false;
+        }
+                                     
+        private void CutFreqs()
+        {
+            if (SelectedFreqs != null && SelectedFreqs.Count>0) 
+            {
+                _FreqsClipboard = new List<Freq>();
+                foreach (Freq freq in SelectedFreqs)
+                {
+                    _FreqsClipboard.Add(freq);
+                }
+            }
+        }
+
+        #endregion
+
+        #region New, Edit and Delete Methods
+        private void NewFreq()
+        {
+            Debug.WriteLine(nameof(NewFreq));
+        }
+
+        private bool CanSaveActiveFreq()
+        {
+            return true;
+        }
+
+        private async void SaveActiveFreq()
+        {
+            //TODO: call DbService save freq with ActiveFreq as parameter
+            if (_ActiveFreq != null)
+                await Service.UpdateFreqAsync(_ActiveFreq);
+        }
+        #endregion
+
+
+
 
 
     }

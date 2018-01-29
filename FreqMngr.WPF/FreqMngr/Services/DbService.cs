@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Sql;
 using System.Data.SqlClient;
+using System.Data;
 
 using System.Diagnostics;
 
@@ -16,6 +17,10 @@ namespace FreqMngr.Services
 {
     public class DbService : IDbService
     {
+        private static String TABLEMODULATIONS_CLM_NAME = "Name";
+        private static int TABLEMODULATIONS_CLM_IDX_NAME = 0;
+        private static String TABLEMODULATIONS_PARAM_NAME = "pName";
+
         private static String TABLEGROUPS_CLM_ID = "Id";
         private static String TABLEGROUPS_CLM_NAME = "Name";
         private static String TABLEGROUPS_CLM_PARENTID = "ParentId";
@@ -29,11 +34,26 @@ namespace FreqMngr.Services
         private static String TABLEFREQS_CLM_PROTOCOL = "Protocol";
         private static String TABLEFREQS_CLM_BANDWIDTH = "Bandwidth";
         private static String TABLEFREQS_CLM_COUNTRY = "Country";
-        private static String TABLEFREQS_CLM_USER = "User";        
+        private static String TABLEFREQS_CLM_SERVICE = "Service";        
         private static String TABLEFREQS_CLM_DESCRIPTION = "Description";
-        private static String TABLEFREQS_CLM_REFERENCES = "References";
+        private static String TABLEFREQS_CLM_URLs = "URLs";
         private static String TABLEFREQS_CLM_QSL = "QSL";
         private static String TABLEFREQS_CLM_COORDINATES = "Coordinates";
+
+        private static String TABLEFREQS_PARAM_ID = "@pId";
+        private static String TABLEFREQS_PARAM_FREQUENCY = "@pFrequency";
+        private static String TABLEFREQS_PARAM_NAME = "@pName";
+        private static String TABLEFREQS_PARAM_PARENTID = "@pParentId";
+        private static String TABLEFREQS_PARAM_MODULATION = "@pModulation";
+        private static String TABLEFREQS_PARAM_MODULATIONTYPE = "@pModulationType";
+        private static String TABLEFREQS_PARAM_PROTOCOL = "@pProtocol";
+        private static String TABLEFREQS_PARAM_BANDWIDTH = "@pBandwidth";
+        private static String TABLEFREQS_PARAM_COUNTRY = "@pCountry";
+        private static String TABLEFREQS_PARAM_SERVICE = "@pService";
+        private static String TABLEFREQS_PARAM_DESCRIPTION = "@pDescription";
+        private static String TABLEFREQS_PARAM_URLS = "@pURLs";
+        private static String TABLEFREQS_PARAM_QSL = "@pQSL";
+        private static String TABLEFREQS_PARAM_COORDINATES = "@pCoordinates";
 
         private static int TABLEFREQS_CLM_IDX_ID = 0;
         private static int TABLEFREQS_CLM_IDX_NAME = 1;
@@ -44,13 +64,11 @@ namespace FreqMngr.Services
         private static int TABLEFREQS_CLM_IDX_PROTOCOL = 6;
         private static int TABLEFREQS_CLM_IDX_BANDWIDTH = 7;
         private static int TABLEFREQS_CLM_IDX_COUNTRY = 8;
-        private static int TABLEFREQS_CLM_IDX_USER = 9;
+        private static int TABLEFREQS_CLM_IDX_SERVICE = 9;
         private static int TABLEFREQS_CLM_IDX_DESCRIPTION = 10;
-        private static int TABLEFREQS_CLM_IDX_REFERENCES = 11;
+        private static int TABLEFREQS_CLM_IDX_URLS = 11;
         private static int TABLEFREQS_CLM_IDX_QSL = 12;
         private static int TABLEFREQS_CLM_IDX_COORDINATES = 13;
-
-
 
         private String _MdfDbFilePath;
         private String _ConnectionString = null;
@@ -69,9 +87,7 @@ namespace FreqMngr.Services
         public DbService(String mdfDbFilePath)
         {
             if (String.IsNullOrWhiteSpace(mdfDbFilePath)) throw new ArgumentException("mdfDbFilePath");
-            _MdfDbFilePath = mdfDbFilePath;
-
-            //TODO: construct connection string            
+            _MdfDbFilePath = mdfDbFilePath;                  
             _ConnectionString = "Data Source = (LocalDB)\\MSSQLLocalDB; AttachDbFilename = \"" + _MdfDbFilePath +"\"; Integrated Security = True";
         }
 
@@ -84,6 +100,12 @@ namespace FreqMngr.Services
             Debug.WriteLine("Connected");
 
             return true;
+        }
+
+        public void Disconnect()
+        {
+            if (_SqlConnection != null)
+                _SqlConnection.Close();
         }
         
         public List<Group> GetAllGroups()
@@ -106,53 +128,6 @@ namespace FreqMngr.Services
             reader.Close();
             return groupList;
         }
-
-        public Group GetRootGroup()
-        {
-            if (_Connected==false) throw new Exception("Not connected to any database");
-            Group root = null;
-
-            List<Group> allGroupsList = GetAllGroups();            
-                                                            
-            return root;
-        }
-
-        //private void LoadFreqs(List<Freq> list, Group group)
-        //{
-        //    if (_Connected == false) throw new Exception("Not connected to any database");
-
-        //    SqlCommand cmd = new SqlCommand("select * from TableFreqs where ParentId = '" + group.Id + "'", _SqlConnection);
-        //    SqlDataReader reader = cmd.ExecuteReader();
-
-
-        //    while (reader.Read())
-        //    {
-        //        int freqId = (int)reader[TABLEFREQS_CLM_ID];
-        //        double freqFrequency = (double)reader[TABLEFREQS_CLM_FREQUENCY];
-        //        String freqName = (String)reader[TABLEFREQS_CLM_NAME];
-        //        int parentId = (int)reader[TABLEFREQS_CLM_PARENTID];
-        //        String freqModulation = (String)reader[TABLEFREQS_CLM_MODULATION];
-
-
-        //        Freq freq = new Freq()
-        //        {
-        //            Frequency = freqFrequency,
-        //            Name = freqName,
-        //            Modulation = freqModulation
-        //        };
-
-        //        list.Add(freq);
-
-        //        Debug.WriteLine("Found: " + freqId.ToString() + ", " + freqName);
-        //    }
-
-        //    reader.Close();
-
-        //    foreach(Group childgroup in group.Children)
-        //    {
-        //        LoadFreqs(list, childgroup);
-        //    }
-        //}            
 
         private String SafeGetString(SqlDataReader reader, int colIndex)
         {
@@ -182,15 +157,16 @@ namespace FreqMngr.Services
                 double freqBandwidth = reader[TABLEFREQS_CLM_BANDWIDTH] as double? ?? default(double);
 
                 String freqCountry = SafeGetString(reader, TABLEFREQS_CLM_IDX_COUNTRY);
-                String freqUser = SafeGetString(reader, TABLEFREQS_CLM_IDX_USER);
+                String freqUser = SafeGetString(reader, TABLEFREQS_CLM_IDX_SERVICE);
                 String freqDescription = SafeGetString(reader, TABLEFREQS_CLM_IDX_DESCRIPTION);
-                String freqReferences = SafeGetString(reader, TABLEFREQS_CLM_IDX_REFERENCES);
+                String freqURLs = SafeGetString(reader, TABLEFREQS_CLM_IDX_URLS);
                 String freqQSL = SafeGetString(reader, TABLEFREQS_CLM_IDX_QSL);
                 String freqCoordinates = SafeGetString(reader, TABLEFREQS_CLM_IDX_COORDINATES);
 
 
                 Freq freq = new Freq()
-                {                    
+                {                  
+                    Id = freqId,  
                     Parent = group,
                     Frequency = freqFrequency,
                     Name = freqName,
@@ -199,9 +175,9 @@ namespace FreqMngr.Services
                     Protocol = freqProtocol,
                     Bandwidth = freqBandwidth,
                     Country = freqCountry,
-                    User = freqUser,
+                    Service = freqUser,
                     Description = freqDescription,
-                    References = freqReferences,
+                    URLs = freqURLs,
                     QSL = freqQSL,
                     Coordinates = freqCoordinates
                 };
@@ -215,6 +191,25 @@ namespace FreqMngr.Services
             return freqList;
         }
 
+        private IEnumerable<Freq> GetAllFreqs(Group group)
+        {
+            List<Freq> list = new List<Freq>();
+
+            list = (List<Freq>)GetFreqs(group);
+
+            foreach (Group childGroup in group.Children)
+            {
+                List<Freq> childFreqList = (List<Freq>)GetAllFreqs(childGroup);
+                list.AddRange(childFreqList);
+            }
+
+            return list;
+        }
+
+        public Task<List<Freq>> GetAllDescendantFreqsAsync(Group group)
+        {
+            return Task.Factory.StartNew(() => { return (List<Freq>)GetAllFreqs(group); });
+        }
 
         private void LoadChildren(IEnumerable<Group> groupList, Group parent)
         {
@@ -257,5 +252,90 @@ namespace FreqMngr.Services
             });
         }
 
+        private bool UpdateFreq(Freq freq)
+        {
+            //TODO : create save freq SQL query
+            //String updateQuery = "UPDATE TableFreqs SET Frequency = '2222',Name = 'Malakia Updated' WHERE Id = 1";
+            //String updateQuery = "UPDATE TableFreqs(Name) VALUES (@pName) WHERE Id = @pId ;";            
+            //String updateQuery = "UPDATE TableFreqs SET Name = @pName WHERE Id = @pId";
+            //String updateQuery = "UPDATE TableFreqs SET Frequency = @pFrequency,Name = @pName WHERE Id = @pId";
+
+            String updateQuery = "UPDATE TableFreqs SET " +
+                TABLEFREQS_CLM_FREQUENCY + " = " + TABLEFREQS_PARAM_FREQUENCY + "," +
+                TABLEFREQS_CLM_NAME + " = " + TABLEFREQS_PARAM_NAME + "," +
+                TABLEFREQS_CLM_PARENTID + " = " + TABLEFREQS_PARAM_PARENTID + "," +
+                TABLEFREQS_CLM_MODULATION + " = " + TABLEFREQS_PARAM_MODULATION + "," +
+                TABLEFREQS_CLM_MODULATIONTYPE + " = " + TABLEFREQS_PARAM_MODULATIONTYPE + "," +
+                TABLEFREQS_CLM_PROTOCOL + " = " + TABLEFREQS_PARAM_PROTOCOL + "," +
+                TABLEFREQS_CLM_BANDWIDTH + " = " + TABLEFREQS_PARAM_BANDWIDTH + "," +
+                TABLEFREQS_CLM_COUNTRY + " = " + TABLEFREQS_PARAM_COUNTRY + "," + 
+                TABLEFREQS_CLM_SERVICE + " = " + TABLEFREQS_PARAM_SERVICE +  "," +               
+                TABLEFREQS_CLM_DESCRIPTION + " = " + TABLEFREQS_PARAM_DESCRIPTION + "," +
+                TABLEFREQS_CLM_URLs + " = " + TABLEFREQS_PARAM_URLS + "," +
+                TABLEFREQS_CLM_QSL + " = " + TABLEFREQS_PARAM_QSL + "," +
+                TABLEFREQS_CLM_COORDINATES + " = " + TABLEFREQS_PARAM_COORDINATES +
+                " WHERE " + 
+                TABLEFREQS_CLM_ID + " = " + TABLEFREQS_PARAM_ID;
+
+
+            SqlCommand cmd = new SqlCommand(updateQuery, _SqlConnection);
+            cmd.Parameters.Add(TABLEFREQS_PARAM_ID, SqlDbType.Int).Value = freq.Id;
+            cmd.Parameters.Add(TABLEFREQS_PARAM_FREQUENCY, SqlDbType.Float).Value = freq.Frequency;
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_NAME, freq.Name);
+            cmd.Parameters.Add(TABLEFREQS_PARAM_PARENTID, SqlDbType.Int).Value = freq.Parent.Id;
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_MODULATION, freq.Modulation);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_MODULATIONTYPE, freq.ModulationType);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_PROTOCOL, freq.Protocol);
+            cmd.Parameters.Add(TABLEFREQS_PARAM_BANDWIDTH, SqlDbType.Float).Value = freq.Bandwidth;
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_COUNTRY, freq.Country);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_SERVICE, freq.Service);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_DESCRIPTION, freq.Description);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_URLS, freq.URLs);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_QSL, freq.QSL);
+            cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_COORDINATES, freq.Coordinates);
+
+            Debug.WriteLine("CommandText = " + cmd.CommandText);
+
+            int rows = 0;
+            try
+            {
+                rows = cmd.ExecuteNonQuery();
+            }
+            catch(Exception expt)
+            {
+                Debug.WriteLine("Rows affected = " + rows.ToString() + " Expt: " + expt.Message);
+                return false;
+            }                        
+            
+            Debug.WriteLine("Rows affected = " + rows.ToString());            
+            return true;
+        }
+
+        public Task<bool> UpdateFreqAsync(Freq freq)
+        {
+            return Task.Factory.StartNew(() =>{ return UpdateFreq(freq); });
+        }
+
+        public List<string> GetModulations()
+        {
+            List<String> modList = new List<String>();
+            if (_Connected == false) throw new Exception("Not connected to any database");
+
+            SqlCommand cmd = new SqlCommand("select * from TableModulations", _SqlConnection);
+            SqlDataReader reader = cmd.ExecuteReader();
+            
+            while (reader.Read())
+            {
+                String mod = (String)reader[TABLEMODULATIONS_CLM_NAME];
+                modList.Add(mod);
+            }
+            reader.Close();
+            return modList;
+        }
+
+        public Task<List<String>> GetModulationsAsync()
+        {
+            return Task.Factory.StartNew(() => { return GetModulations(); });
+        }
     }
 }

@@ -26,6 +26,19 @@ namespace FreqMngr.Models
 
         private NumberFormatInfo NumberFormat { get; set; } = null;
 
+        private int _Id;
+        public int Id
+        {
+            get
+            {
+                return _Id;
+            }
+            set
+            {
+                _Id = value;
+            }
+        }
+
         private Group _Parent = null;
         public Group Parent
         {
@@ -165,20 +178,20 @@ namespace FreqMngr.Models
             }
         }
 
-        private String _User = null;
-        public String User
+        private String _Service = null;
+        public String Service
         {
             get
             {
-                return _User;
+                return _Service;
             }
             set
             {
-                if (value == _User)
+                if (value == _Service)
                     return;
 
-                _User = value;
-                OnPropertyChanged(nameof(User));
+                _Service = value;
+                OnPropertyChanged(nameof(Service));
             }
         }
 
@@ -217,20 +230,20 @@ namespace FreqMngr.Models
             }
         }
 
-        private String _References = null;
-        public String References
+        private String _URLs = null;
+        public String URLs
         {
             get
             {
-                return _References;
+                return _URLs;
             }
             set
             {
-                if (value == _References)
+                if (value == _URLs)
                     return;
 
-                _References = value;
-                OnPropertyChanged(nameof(References));
+                _URLs = value;
+                OnPropertyChanged(nameof(URLs));
             }    
             
         }

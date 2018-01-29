@@ -11,10 +11,16 @@ namespace FreqMngr.Services
 {
     interface IDbService
     {
+        List<String> GetModulations();
+        Task<List<String>> GetModulationsAsync();
         List<Group> GetAllGroups();        
         List<Freq> GetFreqs(Group group);
+        Task<List<Freq>> GetAllDescendantFreqsAsync(Group group);
         List<Group> GetGroupsTree();
         Task<List<Group>> GetGroupsTreeAsync();
         bool Connect();
+        void Disconnect();
+
+        Task<bool> UpdateFreqAsync(Freq freq);
     }
 }
