@@ -10,11 +10,11 @@ using FreqMngr.Commands;
 using System.Windows.Input;
 using System.Diagnostics;
 
-using MvvmDialogs;
-using MvvmDialogs.FrameworkDialogs;
-using MvvmDialogs.DialogFactories;
-using MvvmDialogs.DialogTypeLocators;
-using MvvmDialogs.Logging;
+//using MvvmDialogs;
+//using MvvmDialogs.FrameworkDialogs;
+//using MvvmDialogs.DialogFactories;
+//using MvvmDialogs.DialogTypeLocators;
+//using MvvmDialogs.Logging;
 
 namespace FreqMngr.ViewModels
 {
@@ -205,7 +205,7 @@ namespace FreqMngr.ViewModels
                 String folderPath = System.IO.Directory.GetCurrentDirectory();
                 //_DbFilePath = folderPath + @"\FreqDB.mdf";
                 //_DbFilePath = @"..\..\FreqDB.mdf";
-                _DbFilePath = @"C:\Users\Dirty Harry\Source\github\FreqMngr.WPF\FreqMngr\FreqDb.mdf";
+                _DbFilePath = @"C:\Users\Dirty Harry\Source\FreqMngr\FreqMngr.WPF\FreqMngr\FreqDb.mdf";
                 System.Windows.MessageBox.Show(_DbFilePath);
                 Service = new DbService(_DbFilePath);
             }

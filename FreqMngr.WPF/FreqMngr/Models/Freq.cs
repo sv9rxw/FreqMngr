@@ -265,7 +265,10 @@ namespace FreqMngr.Models
             }
         }
 
-
+        public Freq Clone()
+        {
+            return new Freq();
+        }
 
 
         public Freq()
