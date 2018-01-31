@@ -10,18 +10,17 @@ using FreqMngr.Commands;
 using System.Windows.Input;
 using System.Diagnostics;
 
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.CommandWpf;
 using MvvmDialogs;
-using MvvmDialogs.FrameworkDialogs;
-using MvvmDialogs.DialogFactories;
-using MvvmDialogs.DialogTypeLocators;
-using MvvmDialogs.Logging;
 
 namespace FreqMngr.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
         private enum ClipboardType : byte {Cut = 1, Copy };
-        
+
+        private readonly IDialogService _DialogService;
 
         private String _DbFilePath = "FreqDB.mdf";
         public String DbFilePath
@@ -178,25 +177,25 @@ namespace FreqMngr.ViewModels
 
         #region Commands
 
-        public RelayCommand LoadDatabaseCommand { get; set; }
-        public RelayCommand CloseDatabaseCommand { get; set; }
-        public RelayCommand NewGroupCommand { get; set; }
-        public RelayCommand EditGroupCommand { get; set; }
-        public RelayCommand DeleteGroupCommand { get; set; }
-        public RelayCommand GroupSwitchToEditingMode { get; private set; }
-        public RelayCommand FreqsSelectionChangedCommand { get; set; }
-        public RelayCommand SaveFreqCommand { get; set; }
-        public RelayCommand NewFreqCommand { get; set; }
-        public RelayCommand CutFreqsCommand { get; set; }
-        public RelayCommand CopyFreqsCommand { get; set; }
-        public RelayCommand PasteFreqsCommand { get; set; }
+        public Commands.RelayCommand LoadDatabaseCommand { get; set; }
+        public Commands.RelayCommand CloseDatabaseCommand { get; set; }
+        public Commands.RelayCommand NewGroupCommand { get; set; }
+        public Commands.RelayCommand EditGroupCommand { get; set; }
+        public Commands.RelayCommand DeleteGroupCommand { get; set; }
+        public Commands.RelayCommand GroupSwitchToEditingMode { get; private set; }
+        public Commands.RelayCommand FreqsSelectionChangedCommand { get; set; }
+        public Commands.RelayCommand SaveFreqCommand { get; set; }
+        public Commands.RelayCommand NewFreqCommand { get; set; }
+        public Commands.RelayCommand CutFreqsCommand { get; set; }
+        public Commands.RelayCommand CopyFreqsCommand { get; set; }
+        public Commands.RelayCommand PasteFreqsCommand { get; set; }
 
 
 
         #endregion
 
         #region Constructor and Event
-        public MainWindowViewModel()
+        public MainWindowViewModel(IDialogService dialogService)
         {
             if (IsInDesignMode)
                 Service = new DbServiceMock("designmode");
@@ -208,16 +207,18 @@ namespace FreqMngr.ViewModels
                 _DbFilePath = @"C:\Users\Dirty Harry\Source\FreqMngr\FreqMngr.WPF\FreqMngr\FreqDb.mdf";
                 System.Windows.MessageBox.Show(_DbFilePath);
                 Service = new DbService(_DbFilePath);
-            }
+            }            
+
+            this._DialogService = dialogService;
 
             this.PropertyChanged += MainWindowViewModel_PropertyChanged;
 
-            LoadDatabaseCommand = new RelayCommand((item) => { LoadDatabase(); }, (item) => { return true; });
-            CloseDatabaseCommand = new RelayCommand((item) => { CloseDatabase(); });
+            LoadDatabaseCommand = new Commands.RelayCommand((item) => { LoadDatabase(); }, (item) => { return true; });
+            CloseDatabaseCommand = new Commands.RelayCommand((item) => { CloseDatabase(); });
 
 
 
-            FreqsSelectionChangedCommand = new RelayCommand((item) =>
+            FreqsSelectionChangedCommand = new Commands.RelayCommand((item) =>
             {
                 _SelectedFreqs.Clear();
 
@@ -238,12 +239,12 @@ namespace FreqMngr.ViewModels
             });
 
 
-            NewFreqCommand = new RelayCommand((item) => { NewFreq(); }, (item => { return true; }));
-            SaveFreqCommand = new RelayCommand((item) => { SaveActiveFreq(); }, (item) => { return CanSaveActiveFreq(); });
-            CutFreqsCommand = new RelayCommand((item) => { CutFreqs(); }, (item) => { return CanCutFreqs(); });
-            CopyFreqsCommand = new RelayCommand((item) => { CopyFreqs(); }, (item) => { return CanCopyFreqs(); });
-            PasteFreqsCommand = new RelayCommand((item) => { PasteFreqs(); }, (item) => { return CanPasteFreqs(); });
-            GroupSwitchToEditingMode = new RelayCommand((item) => { _ActiveGroup.IsEditing = !_ActiveGroup.IsEditing;  } );        
+            NewFreqCommand = new Commands.RelayCommand((item) => { NewFreq(); }, (item => { return true; }));
+            SaveFreqCommand = new Commands.RelayCommand((item) => { SaveActiveFreq(); }, (item) => { return CanSaveActiveFreq(); });
+            CutFreqsCommand = new Commands.RelayCommand((item) => { CutFreqs(); }, (item) => { return CanCutFreqs(); });
+            CopyFreqsCommand = new Commands.RelayCommand((item) => { CopyFreqs(); }, (item) => { return CanCopyFreqs(); });
+            PasteFreqsCommand = new Commands.RelayCommand((item) => { PasteFreqs(); }, (item) => { return CanPasteFreqs(); });
+            GroupSwitchToEditingMode = new Commands.RelayCommand((item) => { _ActiveGroup.IsEditing = !_ActiveGroup.IsEditing;  } );        
 
         }
 

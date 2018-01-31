@@ -9,19 +9,22 @@
         xmlns:local="clr-namespace:FreqMngr"                   
         xmlns:models="clr-namespace:FreqMngr.Models"        
         xmlns:helpers="clr-namespace:FreqMngr.Helpers"
-        xmlns:ViewModels="clr-namespace:FreqMngr.ViewModels"                
-        xmlns:views="clr-namespace:FreqMngr.Views"
+        xmlns:ViewModels="clr-namespace:FreqMngr.ViewModels"                        
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"        
-        xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"               
+        xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"        
+        xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
         mc:Ignorable="d"
-        Title="FreqMngr" Height="800" Width="1024">
+        md:DialogServiceViews.IsRegistered="True"
+        WindowStartupLocation="CenterScreen"        
+        Title="FreqMngr" Height="800" Width="1024"
+        DataContext="{Binding Source={StaticResource Locator}, Path=MainWindow}">
     <Window.Resources>
-        <ViewModels:MainWindowViewModel x:Key="MainWindowViewModelDataSource" d:IsDataSource="True"/>
+        <!-- <ViewModels:MainWindowViewModel x:Key="MainWindowViewModelDataSource" d:IsDataSource="True"/> -->        
     </Window.Resources>
 
 
 
-    <DockPanel x:Name="PnlMain" DataContext="{Binding Source={StaticResource MainWindowViewModelDataSource}}" >
+    <DockPanel x:Name="PnlMain" >
 
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="Closing">

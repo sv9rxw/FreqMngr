@@ -2,7 +2,6 @@
 using Microsoft.Practices.ServiceLocation;
 
 using FreqMngr.ViewModels;
-using FreqMngr.Views;
 
 namespace FreqMngr
 {
@@ -13,10 +12,9 @@ namespace FreqMngr
     public class ViewModelLocator
     {
         public ViewModelLocator()
-        {
-            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
-            SimpleIoc.Default.Register<MainWindowViewModel>();
+        {            
+            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);            
+            SimpleIoc.Default.Register<MainWindowViewModel>();            
             SimpleIoc.Default.Register<TextDialogViewModel>();
         }
 

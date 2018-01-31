@@ -96,9 +96,6 @@
     </ApplicationDefinition>
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Helpers\TreeViewAttached.cs" />
-    <Compile Include="InputDialog.xaml.cs">
-      <DependentUpon>InputDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Modulation.cs" />
     <Compile Include="Models\Freq.cs" />
     <Compile Include="Models\Group.cs" />
@@ -108,11 +105,10 @@
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Page Include="InputDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MainWindow.xaml">
+    <Compile Include="TextDialog.xaml.cs">
+      <DependentUpon>TextDialog.xaml</DependentUpon>
+    </Compile>
+    <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -123,10 +119,14 @@
     <Compile Include="ViewModels\TextDialogViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="Views\MainWindow.xaml.cs">
+    <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="TextDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -171,7 +171,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Views\Images\Save_16x.png" />
+    <Resource Include="Images\Save_16x.png" />
     <Resource Include="FreqDB.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -182,16 +182,17 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>FreqDB.mdf</DependentUpon>
     </Content>
-    <Resource Include="Views\Images\Copy_16x.png" />
-    <Resource Include="Views\Images\Cut_16x.png" />
-    <Resource Include="Views\Images\Paste_16x.png" />
-    <Resource Include="Views\Images\ConnectToDatabase_16x.png" />
-    <Resource Include="Views\Images\DatabaseRun_16x.png" />
-    <Resource Include="Views\Images\DatabaseStop_16x.png" />
-    <Resource Include="Views\Images\Database_16x.png" />
+    <Resource Include="Images\Copy_16x.png" />
+    <Resource Include="Images\Cut_16x.png" />
+    <Resource Include="Images\Paste_16x.png" />
+    <Resource Include="Images\ConnectToDatabase_16x.png" />
+    <Resource Include="Images\DatabaseRun_16x.png" />
+    <Resource Include="Images\DatabaseStop_16x.png" />
+    <Resource Include="Images\Database_16x.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
