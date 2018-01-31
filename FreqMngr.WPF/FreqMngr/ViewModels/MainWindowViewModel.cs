@@ -10,11 +10,11 @@ using FreqMngr.Commands;
 using System.Windows.Input;
 using System.Diagnostics;
 
-//using MvvmDialogs;
-//using MvvmDialogs.FrameworkDialogs;
-//using MvvmDialogs.DialogFactories;
-//using MvvmDialogs.DialogTypeLocators;
-//using MvvmDialogs.Logging;
+using MvvmDialogs;
+using MvvmDialogs.FrameworkDialogs;
+using MvvmDialogs.DialogFactories;
+using MvvmDialogs.DialogTypeLocators;
+using MvvmDialogs.Logging;
 
 namespace FreqMngr.ViewModels
 {
