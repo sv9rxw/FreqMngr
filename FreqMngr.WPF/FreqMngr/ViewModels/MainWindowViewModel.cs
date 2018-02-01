@@ -269,6 +269,9 @@ namespace FreqMngr.ViewModels
             {
                 if (e.PropertyName == nameof(ActiveGroup))
                 {
+                    if (ActiveGroup == null)
+                        return;
+
                     IsBusy = true;
                     _Freqs.Clear();
                     List<Freq> freqs = await Service.GetAllDescendantFreqsAsync(_ActiveGroup);
@@ -292,15 +295,9 @@ namespace FreqMngr.ViewModels
             foreach (String mod in modList)
                 _Modulations.Add(mod);
 
-            //Load groups
-            _Groups.Clear();
-            List<Group> groupList = await Service.GetGroupsTreeAsync();
-            foreach (Group group in groupList)
-                _Groups.Add(group);
-
-            RootGroup = groupList[0];
-
-            IsBusy = false;
+            //Reload groups
+            ReloadGroups();                                    
+            
         }
 
         private void CloseDatabase()
@@ -309,9 +306,23 @@ namespace FreqMngr.ViewModels
             Service.Disconnect();
         }
 
+        private async void ReloadGroups()
+        {
+            IsBusy = true;
+            _Groups.Clear();
+            List<Group> groupList = await Service.GetGroupsTreeAsync();
+            foreach (Group group in groupList)
+                _Groups.Add(group);
+
+            RootGroup = _Groups[0];
+            IsBusy = false;            
+        }
+
         #endregion
 
         #region Groups New, Edit and Delete Methods
+
+
 
         private async void NewGroup()
         {
@@ -319,7 +330,8 @@ namespace FreqMngr.ViewModels
             if (newGroupName!=null)
             {
                 Group group = new Group(newGroupName, _ActiveGroup);
-                bool status = await Service.InsertGroupAsync(group);                
+                bool status = await Service.InsertGroupAsync(group);
+                ReloadGroups();                
             }
         }
 
@@ -333,6 +345,7 @@ namespace FreqMngr.ViewModels
             {
                 group.Name = groupName;
                 bool status = await Service.UpdateGroypAsync(group);
+                ReloadGroups();
             }
         }
 
@@ -465,10 +478,6 @@ namespace FreqMngr.ViewModels
                 await Service.UpdateFreqAsync(_ActiveFreq);
         }
         #endregion
-
-
-
-
 
     }
 }
