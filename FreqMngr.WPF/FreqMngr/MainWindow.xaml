@@ -157,7 +157,7 @@
                         <MenuItem x:Name="MnuCopy" Header="Copy" Command="{Binding CopyFreqsCommand}" />
                         <MenuItem x:Name="MnuPaste" Header="Paste" Command="{Binding PasteFreqsCommand}" />
                         <Separator />
-                        <MenuItem x:Name="MnuDelete" Header="Delete" />
+                        <MenuItem x:Name="MnuDelete" Header="Delete" Command="{Binding DeleteFreqsCommand}"/>
                     </ContextMenu>
                 </xcdg:DataGridControl.ContextMenu>
 

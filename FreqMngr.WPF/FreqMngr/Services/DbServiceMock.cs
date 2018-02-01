@@ -159,5 +159,15 @@ namespace FreqMngr.Services
         {
             throw new NotImplementedException();
         }
+
+        public bool DeleteFreq(Freq freq)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteFreqAsync(Freq freq)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

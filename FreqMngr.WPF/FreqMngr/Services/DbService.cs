@@ -519,5 +519,37 @@ namespace FreqMngr.Services
         {
             return Task.Factory.StartNew(() => { return UpdateGroup(group); });
         }
+
+        public bool DeleteFreq(Freq freq)
+        {
+            if (freq == null)
+                return false;
+
+            if (_Connected == false)
+                return false;
+
+            String deleteQuery = "DELETE FROM TableFreqs WHERE ID=@pId";
+            SqlCommand cmd = new SqlCommand(deleteQuery, _SqlConnection);
+            cmd.Parameters.Add(TABLEFREQS_PARAM_ID, SqlDbType.Int).Value = freq.Id;
+
+            int rows = 0;
+            try
+            {
+                rows = cmd.ExecuteNonQuery();
+            }
+            catch (Exception expt)
+            {
+                Debug.WriteLine("Error in DeleteFreq(): " + expt.Message);
+                return false;
+            }
+
+            Debug.WriteLine("Success: " + rows.ToString() + " rows affected");
+            return true;
+        }
+
+        public Task<bool> DeleteFreqAsync(Freq freq)
+        {
+            return Task.Factory.StartNew(() => { return DeleteFreq(freq); });
+        }
     }
 }

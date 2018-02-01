@@ -186,6 +186,7 @@ namespace FreqMngr.ViewModels
         public Commands.RelayCommand FreqsSelectionChangedCommand { get; set; }
         public Commands.RelayCommand SaveFreqCommand { get; set; }
         public Commands.RelayCommand NewFreqCommand { get; set; }
+        public Commands.RelayCommand DeleteFreqsCommand { get; set; }
         public Commands.RelayCommand CutFreqsCommand { get; set; }
         public Commands.RelayCommand CopyFreqsCommand { get; set; }
         public Commands.RelayCommand PasteFreqsCommand { get; set; }
@@ -242,6 +243,8 @@ namespace FreqMngr.ViewModels
 
             NewFreqCommand = new Commands.RelayCommand((item) => { NewFreq(); }, (item => { return true; }));
             SaveFreqCommand = new Commands.RelayCommand((item) => { SaveActiveFreq(); }, (item) => { return CanSaveActiveFreq(); });
+            DeleteFreqsCommand = new Commands.RelayCommand((item) => { DeleteFreqs(); }, (item) => { return CanDeleteFreqs(); });
+
             CutFreqsCommand = new Commands.RelayCommand((item) => { CutFreqs(); }, (item) => { return CanCutFreqs(); });
             CopyFreqsCommand = new Commands.RelayCommand((item) => { CopyFreqs(); }, (item) => { return CanCopyFreqs(); });
             PasteFreqsCommand = new Commands.RelayCommand((item) => { PasteFreqs(); }, (item) => { return CanPasteFreqs(); });
@@ -465,6 +468,50 @@ namespace FreqMngr.ViewModels
         {
             Debug.WriteLine(nameof(NewFreq));
         }
+
+        private Task<bool> DeleteFreqsAsync()
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                if (_SelectedFreqs!=null && _SelectedFreqs.Count>0)
+                {
+                    foreach (Freq freq in _SelectedFreqs)
+                    {
+                        bool status = Service.DeleteFreq(freq);
+                    }
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        private async void DeleteFreqs()
+        {
+            if (SelectedFreqs != null && SelectedFreqs.Count > 0)
+            {
+                IsBusy = true;
+                bool status = await DeleteFreqsAsync();
+                if (status == false)
+                {
+                    System.Windows.MessageBox.Show("Error: cannot delete selected frequencies");
+                    return;
+                }
+                // Refresh frequencies DataGrid
+                _Freqs.Clear();
+                List<Freq> freqs = await Service.GetAllDescendantFreqsAsync(_ActiveGroup);
+                foreach (Freq freq in freqs)
+                    _Freqs.Add(freq);
+                IsBusy = false;
+            }
+        }
+
+        private bool CanDeleteFreqs()
+        {
+            if (SelectedFreqs != null && SelectedFreqs.Count > 0)
+                return true;
+            return false;
+        }
+
 
         private bool CanSaveActiveFreq()
         {
