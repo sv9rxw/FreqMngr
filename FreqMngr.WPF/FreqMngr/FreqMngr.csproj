@@ -101,6 +101,7 @@
     <Compile Include="Models\Group.cs" />
     <Compile Include="Services\DbService.cs" />
     <Compile Include="Services\DbServiceMock.cs" />
+    <Compile Include="Services\SearchFilter.cs" />
     <Compile Include="Services\IDbService.cs" />
     <Compile Include="ViewModelLocator.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />

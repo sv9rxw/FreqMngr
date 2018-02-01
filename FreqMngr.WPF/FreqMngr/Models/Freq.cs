@@ -39,18 +39,18 @@ namespace FreqMngr.Models
             }
         }
 
-        private Group _Parent = null;
-        public Group Parent
-        {
-            get
-            {
-                return _Parent;
-            }
-            set
-            {
-                _Parent = value;
-            }
-        }
+        //private Group _Parent = null;
+        //public Group Parent
+        //{
+        //    get
+        //    {
+        //        return _Parent;
+        //    }
+        //    set
+        //    {
+        //        _Parent = value;
+        //    }
+        //}
 
         private bool _IsDirty = false;
         public bool IsDirty
@@ -92,7 +92,21 @@ namespace FreqMngr.Models
                 _Frequency = value;
                 OnPropertyChanged(nameof(Frequency));
             }
-        }        
+        }
+
+        private int _ParentId;
+        public int ParentId
+        {
+            get { return _ParentId; }
+            set
+            {
+                if (value == _ParentId)
+                    return;
+
+                _ParentId = value;
+                OnPropertyChanged(nameof(ParentId));
+            }
+        }
 
         private double _Bandwidth;
         public double Bandwidth
@@ -271,7 +285,7 @@ namespace FreqMngr.Models
             freq.Id = this._Id;
             freq.Name = this._Name;
             freq.Frequency = this._Frequency;
-            freq.Parent = this._Parent;
+            freq.ParentId = this._ParentId;
             freq.Modulation = this._Modulation;
             freq.ModulationType = this._ModulationType;
             freq.Protocol = this._Protocol;

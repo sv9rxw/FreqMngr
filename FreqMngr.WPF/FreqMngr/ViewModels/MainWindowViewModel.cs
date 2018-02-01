@@ -55,6 +55,9 @@ namespace FreqMngr.ViewModels
             }
         }
 
+        public String SearchMode { get; set; } = "All";
+        public ObservableCollection<String> SearchModes { get; set; } = new ObservableCollection<string>() { "All", "Selected Group" };
+
         public ObservableCollection<String> QSLs { get; set; } = new ObservableCollection<String>() { "True", "False" };        
 
         /// <summary>
@@ -435,7 +438,7 @@ namespace FreqMngr.ViewModels
                 {
                     foreach (Freq freq in _FreqsClipboard)
                     {
-                        freq.Parent = _ActiveGroup;
+                        freq.ParentId = _ActiveGroup.Id;
                         if (_CliboardType == ClipboardType.Cut)
                         {
                             bool status = Service.UpdateFreq(freq);

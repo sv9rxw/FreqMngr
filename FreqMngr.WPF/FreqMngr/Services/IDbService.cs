@@ -28,8 +28,8 @@ namespace FreqMngr.Services
         Task<bool> UpdateGroypAsync(Group group);
         bool DeleteGroup(Group group);
         Task<bool> DeleteGroupAsync(Group group);
-
-        List<Freq> GetFreqs(Group group);
+        
+        List<Freq> GetFreqs(SearchFilter filter);
         Task<List<Freq>> GetAllDescendantFreqsAsync(Group group);
         Task<bool> UpdateFreqAsync(Freq freq);
         bool UpdateFreq(Freq freq);

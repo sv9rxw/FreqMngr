@@ -56,6 +56,7 @@
             <TextBlock x:Name="TxtSelectedGroup" Margin="30,0,0,0" VerticalAlignment="Center" Text="{Binding ActiveGroup.Name}" Width="200" FontSize="14" FontWeight="SemiBold"/>
 
             <TextBlock Margin="100,0,0,0" VerticalAlignment="Center" Text="Search:" />
+            <ComboBox x:Name="CmbSearchMode" Margin="3,0,0,3" VerticalAlignment="Center" Width="100" ItemsSource="{Binding SearchModes}" SelectedItem="{Binding SearchMode}"/>
             <TextBox x:Name="TxtSearchTerm" Margin="3,0,0,0" VerticalAlignment="Center" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Width="200" />
             <Button x:Name="BtnSearch" Margin="5,0,0,0" VerticalAlignment="Center" Command="{Binding SearchFreqsCommand}">
                 <Image Width="16" Source="Images/Search_16x.png"  />

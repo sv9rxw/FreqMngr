@@ -139,12 +139,30 @@ namespace FreqMngr.Services
             return String.Empty;
         }
 
-        public List<Freq> GetFreqs(Group group)
+        public List<Freq> GetFreqs(SearchFilter filter)
         {            
             List<Freq> freqList = new List<Freq>();
             if (_Connected == false) throw new Exception("Not connected to any database");
 
-            SqlCommand cmd = new SqlCommand("select * from TableFreqs where ParentId = '" + group.Id + "'", _SqlConnection);
+            String query = "select * from TableFreqs";
+
+            if (filter!=null)
+            {
+                if (filter.GroupIdList!=null && filter.GroupIdList.Count>0)
+                {
+                    query = "select * from TableFreqs WHERE ";
+                    int cnt = filter.GroupIdList.Count;
+                    int i = 0;
+                    for (i = 0; i < cnt - 1; i++)
+                    {
+                        query += TABLEFREQS_CLM_PARENTID + " = " + (filter.GroupIdList[i]).ToString() + " OR ";
+                    }
+                    query += TABLEFREQS_CLM_PARENTID + " = " + (filter.GroupIdList[i]).ToString();
+                    System.Windows.MessageBox.Show(query);
+                }
+            }
+                        
+            SqlCommand cmd = new SqlCommand(query, _SqlConnection);
             SqlDataReader reader = cmd.ExecuteReader();
 
 
@@ -168,9 +186,9 @@ namespace FreqMngr.Services
 
 
                 Freq freq = new Freq()
-                {                  
-                    Id = freqId,  
-                    Parent = group,
+                {
+                    Id = freqId,                    
+                    ParentId = parentId,
                     Frequency = freqFrequency,
                     Name = freqName,
                     Modulation = freqModulation,
@@ -196,7 +214,8 @@ namespace FreqMngr.Services
         {
             List<Freq> list = new List<Freq>();
 
-            list = (List<Freq>)GetFreqs(group);
+            SearchFilter filter = new SearchFilter(null, new List<int>() { group.Id });
+            list = (List<Freq>)GetFreqs(filter);
 
             foreach (Group childGroup in group.Children)
             {
@@ -283,7 +302,7 @@ namespace FreqMngr.Services
             cmd.Parameters.Add(TABLEFREQS_PARAM_ID, SqlDbType.Int).Value = freq.Id;
             cmd.Parameters.Add(TABLEFREQS_PARAM_FREQUENCY, SqlDbType.Float).Value = freq.Frequency;
             cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_NAME, freq.Name);
-            cmd.Parameters.Add(TABLEFREQS_PARAM_PARENTID, SqlDbType.Int).Value = freq.Parent.Id;
+            cmd.Parameters.Add(TABLEFREQS_PARAM_PARENTID, SqlDbType.Int).Value = freq.ParentId;
             cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_MODULATION, freq.Modulation);
             cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_MODULATIONTYPE, freq.ModulationType);
             cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_PROTOCOL, freq.Protocol);
@@ -356,7 +375,7 @@ namespace FreqMngr.Services
             SqlCommand cmd = new SqlCommand(insertQuery, _SqlConnection);            
             cmd.Parameters.Add(TABLEFREQS_PARAM_FREQUENCY, SqlDbType.Float).Value = freq.Frequency;
             cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_NAME, freq.Name);
-            cmd.Parameters.Add(TABLEFREQS_PARAM_PARENTID, SqlDbType.Int).Value = freq.Parent.Id;
+            cmd.Parameters.Add(TABLEFREQS_PARAM_PARENTID, SqlDbType.Int).Value = freq.ParentId;
             cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_MODULATION, freq.Modulation);
             cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_MODULATIONTYPE, freq.ModulationType);
             cmd.Parameters.AddWithValue(TABLEFREQS_PARAM_PROTOCOL, freq.Protocol);
