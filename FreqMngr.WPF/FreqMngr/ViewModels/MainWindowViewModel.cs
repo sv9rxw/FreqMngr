@@ -553,7 +553,10 @@ namespace FreqMngr.ViewModels
 
             IsBusy = true;
             _Freqs.Clear();
-            List<Freq> freqs = await Service.SearchFreqsAsync(SearchTerm);
+
+            SearchFilter filter = new SearchFilter(SearchTerm);
+
+            List<Freq> freqs = await Service.GetFreqsAsync(filter);
             foreach (Freq freq in freqs)
                 _Freqs.Add(freq);
             IsBusy = false;

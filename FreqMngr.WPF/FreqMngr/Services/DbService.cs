@@ -41,7 +41,7 @@ namespace FreqMngr.Services
         private static String TABLEFREQS_CLM_COUNTRY = "Country";
         private static String TABLEFREQS_CLM_SERVICE = "Service";        
         private static String TABLEFREQS_CLM_DESCRIPTION = "Description";
-        private static String TABLEFREQS_CLM_URLs = "URLs";
+        private static String TABLEFREQS_CLM_URLS = "URLs";
         private static String TABLEFREQS_CLM_QSL = "QSL";
         private static String TABLEFREQS_CLM_COORDINATES = "Coordinates";
 
@@ -138,7 +138,7 @@ namespace FreqMngr.Services
                 return reader.GetString(colIndex);
             return String.Empty;
         }
-
+        
         public List<Freq> GetFreqs(SearchFilter filter)
         {            
             List<Freq> freqList = new List<Freq>();
@@ -157,9 +157,26 @@ namespace FreqMngr.Services
                     {
                         query += TABLEFREQS_CLM_PARENTID + " = " + (filter.GroupIdList[i]).ToString() + " OR ";
                     }
-                    query += TABLEFREQS_CLM_PARENTID + " = " + (filter.GroupIdList[i]).ToString();
-                    System.Windows.MessageBox.Show(query);
+                    query += TABLEFREQS_CLM_PARENTID + " = " + (filter.GroupIdList[i]).ToString();                    
+                }else
+                {
+                    if (String.IsNullOrWhiteSpace(filter.SearchTerm)==false)
+                    {
+                        query = "select * from TableFreqs WHERE " +
+                            "CHARINDEX('" + filter.SearchTerm + "', " + TABLEFREQS_CLM_NAME + ") > 0 OR " +
+                            "CHARINDEX('" + filter.SearchTerm + "', " + TABLEFREQS_CLM_FREQUENCY + ") > 0 OR " +
+                            "CHARINDEX('" + filter.SearchTerm + "', " + TABLEFREQS_CLM_FREQUENCY + ") > 0 OR " +
+                            "CHARINDEX('" + filter.SearchTerm + "', " + TABLEFREQS_CLM_MODULATION + ") > 0 OR " +
+                            "CHARINDEX('" + filter.SearchTerm + "', " + TABLEFREQS_CLM_MODULATIONTYPE + ") > 0 OR " +
+                            "CHARINDEX('" + filter.SearchTerm + "', " + TABLEFREQS_CLM_PROTOCOL + ") > 0 OR " +
+                            "CHARINDEX('" + filter.SearchTerm + "', " + TABLEFREQS_CLM_COUNTRY + ") > 0 OR " +
+                            "CHARINDEX('" + filter.SearchTerm + "', " + TABLEFREQS_CLM_SERVICE + ") > 0 OR " +
+                            "CHARINDEX('" + filter.SearchTerm + "', " + TABLEFREQS_CLM_DESCRIPTION + ") > 0 OR " +
+                            "CHARINDEX('" + filter.SearchTerm + "', " + TABLEFREQS_CLM_URLS + ") > 0 OR " +
+                            "CHARINDEX('" + filter.SearchTerm + "', " + TABLEFREQS_CLM_COORDINATES + ") > 0";
+                    }
                 }
+                
             }
                         
             SqlCommand cmd = new SqlCommand(query, _SqlConnection);
@@ -291,7 +308,7 @@ namespace FreqMngr.Services
                 TABLEFREQS_CLM_COUNTRY + " = " + TABLEFREQS_PARAM_COUNTRY + "," + 
                 TABLEFREQS_CLM_SERVICE + " = " + TABLEFREQS_PARAM_SERVICE +  "," +               
                 TABLEFREQS_CLM_DESCRIPTION + " = " + TABLEFREQS_PARAM_DESCRIPTION + "," +
-                TABLEFREQS_CLM_URLs + " = " + TABLEFREQS_PARAM_URLS + "," +
+                TABLEFREQS_CLM_URLS + " = " + TABLEFREQS_PARAM_URLS + "," +
                 TABLEFREQS_CLM_QSL + " = " + TABLEFREQS_PARAM_QSL + "," +
                 TABLEFREQS_CLM_COORDINATES + " = " + TABLEFREQS_PARAM_COORDINATES +
                 " WHERE " + 
@@ -354,7 +371,7 @@ namespace FreqMngr.Services
                 TABLEFREQS_CLM_COUNTRY + "," +
                 TABLEFREQS_CLM_SERVICE + "," +
                 TABLEFREQS_CLM_DESCRIPTION + "," +
-                TABLEFREQS_CLM_URLs + "," +
+                TABLEFREQS_CLM_URLS + "," +
                 TABLEFREQS_CLM_QSL + "," +
                 TABLEFREQS_CLM_COORDINATES + ")" +
                 " VALUES (" +
@@ -567,65 +584,9 @@ namespace FreqMngr.Services
             return Task.Factory.StartNew(() => { return DeleteFreq(freq); });
         }
 
-        public List<Freq> SearchFreqs(string term)
+        public Task<List<Freq>> GetFreqsAsync(SearchFilter filter)
         {
-            if (String.IsNullOrWhiteSpace(term) == true)
-                return null;
-
-            if (_Connected == false)
-                return null;
-            
-            String searchQuery = "SELECT * FROM TableFreqs WHERE CHARINDEX('" + term + "', " + TABLEFREQS_CLM_NAME + ") > 0";
-            SqlCommand cmd = new SqlCommand(searchQuery, _SqlConnection);
-
-            List<Freq> resultList = new List<Freq>();
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            while(reader.Read())
-            {
-                int freqId = (int)reader[TABLEFREQS_CLM_ID];
-                double freqFrequency = (double)reader[TABLEFREQS_CLM_FREQUENCY];
-                String freqName = (String)reader[TABLEFREQS_CLM_NAME];
-                int parentId = reader[TABLEFREQS_CLM_PARENTID] as int? ?? default(int);
-                String freqModulation = SafeGetString(reader, TABLEFREQS_CLM_IDX_MODULATION);
-                String freqModulationType = SafeGetString(reader, TABLEFREQS_CLM_IDX_MODULATIONTYPE);
-                String freqProtocol = SafeGetString(reader, TABLEFREQS_CLM_IDX_PROTOCOL);
-                double freqBandwidth = reader[TABLEFREQS_CLM_BANDWIDTH] as double? ?? default(double);
-
-                String freqCountry = SafeGetString(reader, TABLEFREQS_CLM_IDX_COUNTRY);
-                String freqUser = SafeGetString(reader, TABLEFREQS_CLM_IDX_SERVICE);
-                String freqDescription = SafeGetString(reader, TABLEFREQS_CLM_IDX_DESCRIPTION);
-                String freqURLs = SafeGetString(reader, TABLEFREQS_CLM_IDX_URLS);
-                String freqQSL = SafeGetString(reader, TABLEFREQS_CLM_IDX_QSL);
-                String freqCoordinates = SafeGetString(reader, TABLEFREQS_CLM_IDX_COORDINATES);
-
-
-                Freq freq = new Freq()
-                {
-                    Id = freqId,                    
-                    Frequency = freqFrequency,
-                    Name = freqName,
-                    Modulation = freqModulation,
-                    ModulationType = freqModulationType,
-                    Protocol = freqProtocol,
-                    Bandwidth = freqBandwidth,
-                    Country = freqCountry,
-                    Service = freqUser,
-                    Description = freqDescription,
-                    URLs = freqURLs,
-                    QSL = freqQSL,
-                    Coordinates = freqCoordinates
-                };
-
-                resultList.Add(freq);
-            }
-            reader.Close();
-            return resultList;
-        }
-
-        public Task<List<Freq>> SearchFreqsAsync(string term)
-        {
-            return Task.Factory.StartNew(() => { return SearchFreqs(term); });
+            return Task.Factory.StartNew(() => { return GetFreqs(filter); });
         }
     }
 }

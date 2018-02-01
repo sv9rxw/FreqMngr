@@ -27,9 +27,10 @@ namespace FreqMngr.Services
         bool UpdateGroup(Group group);
         Task<bool> UpdateGroypAsync(Group group);
         bool DeleteGroup(Group group);
-        Task<bool> DeleteGroupAsync(Group group);
-        
+        Task<bool> DeleteGroupAsync(Group group);        
+
         List<Freq> GetFreqs(SearchFilter filter);
+        Task<List<Freq>> GetFreqsAsync(SearchFilter filter);
         Task<List<Freq>> GetAllDescendantFreqsAsync(Group group);
         Task<bool> UpdateFreqAsync(Freq freq);
         bool UpdateFreq(Freq freq);
@@ -37,8 +38,5 @@ namespace FreqMngr.Services
         Task<bool> InsertFreqAsync(Freq freq);
         bool DeleteFreq(Freq freq);
         Task<bool> DeleteFreqAsync(Freq freq);
-
-        List<Freq> SearchFreqs(String term);
-        Task<List<Freq>> SearchFreqsAsync(String term);
     }
 }

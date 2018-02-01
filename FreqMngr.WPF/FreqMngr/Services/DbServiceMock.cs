@@ -186,5 +186,10 @@ namespace FreqMngr.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<Freq>> GetFreqsAsync(SearchFilter filter)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
