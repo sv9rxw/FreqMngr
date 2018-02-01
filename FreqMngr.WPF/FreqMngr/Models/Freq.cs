@@ -267,7 +267,21 @@ namespace FreqMngr.Models
 
         public Freq Clone()
         {
-            return new Freq();
+            Freq freq = new Freq();
+            freq.Id = this._Id;
+            freq.Name = this._Name;
+            freq.Frequency = this._Frequency;
+            freq.Parent = this._Parent;
+            freq.Modulation = this._Modulation;
+            freq.ModulationType = this._ModulationType;
+            freq.Protocol = this._Protocol;
+            freq.Country = this._Country;
+            freq.Service = this._Service;
+            freq.Description = this._Description;
+            freq.URLs = this._URLs;
+            freq.QSL = this._QSL;
+            freq.Coordinates = this._Coordinates;
+            return freq;
         }
 
 
