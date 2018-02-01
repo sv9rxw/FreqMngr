@@ -55,8 +55,9 @@
             <TextBlock Text="Showing group: " Margin="50,0,0,0" VerticalAlignment="Center"/>
             <TextBlock x:Name="TxtSelectedGroup" Margin="30,0,0,0" VerticalAlignment="Center" Text="{Binding ActiveGroup.Name}" Width="200" FontSize="14" FontWeight="SemiBold"/>
 
-            <TextBox x:Name="TxtSearchTerm" Margin="100,0,0,0" VerticalAlignment="Center" Text="" Width="200"/>
-            <Button x:Name="BtnSearch" Margin="5,0,0,0" VerticalAlignment="Center">
+            <TextBlock Margin="100,0,0,0" VerticalAlignment="Center" Text="Search:" />
+            <TextBox x:Name="TxtSearchTerm" Margin="3,0,0,0" VerticalAlignment="Center" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Width="200" />
+            <Button x:Name="BtnSearch" Margin="5,0,0,0" VerticalAlignment="Center" Command="{Binding SearchFreqsCommand}">
                 <Image Width="16" Source="Images/Search_16x.png"  />
             </Button>
 
@@ -210,7 +211,6 @@
                     <xcdg:Column FieldName="URLs" Title="URLs"></xcdg:Column>
                 </xcdg:DataGridControl.Columns>
             </xcdg:DataGridControl>
-
 
             <xctk:BusyIndicator x:Name="BusyIndicator" IsBusy="{Binding IsBusy}" Grid.Column="1">
             </xctk:BusyIndicator>

@@ -10,6 +10,8 @@ namespace FreqMngr.Services
 {
     public class DbServiceMock : IDbService
     {
+        public bool Connected { get => throw new NotImplementedException(); }
+
         public List<Group> GetAllGroups()
         {
             List<Group> groupList = new List<Group>();
@@ -166,6 +168,16 @@ namespace FreqMngr.Services
         }
 
         public Task<bool> DeleteFreqAsync(Freq freq)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Freq> SearchFreqs(string term)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Freq>> SearchFreqsAsync(string term)
         {
             throw new NotImplementedException();
         }

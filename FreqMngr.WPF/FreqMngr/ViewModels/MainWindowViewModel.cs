@@ -175,6 +175,21 @@ namespace FreqMngr.ViewModels
         private List<Freq> _FreqsClipboard = null;
         private ClipboardType _CliboardType = ClipboardType.Cut;
 
+        private String _SearchTerm = null;
+        public String SearchTerm
+        {
+            get { return _SearchTerm; }
+            set
+            {
+                if (value == _SearchTerm)
+                    return;
+
+                _SearchTerm = value;
+                OnPropertyChanged(nameof(SearchTerm));
+            }
+
+        }
+
         #region Commands
 
         public Commands.RelayCommand LoadDatabaseCommand { get; set; }
@@ -192,6 +207,7 @@ namespace FreqMngr.ViewModels
         public Commands.RelayCommand PasteFreqsCommand { get; set; }
 
 
+        public Commands.RelayCommand SearchFreqsCommand { get; set; }
 
         #endregion
 
@@ -248,7 +264,10 @@ namespace FreqMngr.ViewModels
             CutFreqsCommand = new Commands.RelayCommand((item) => { CutFreqs(); }, (item) => { return CanCutFreqs(); });
             CopyFreqsCommand = new Commands.RelayCommand((item) => { CopyFreqs(); }, (item) => { return CanCopyFreqs(); });
             PasteFreqsCommand = new Commands.RelayCommand((item) => { PasteFreqs(); }, (item) => { return CanPasteFreqs(); });
-            GroupSwitchToEditingMode = new Commands.RelayCommand((item) => { _ActiveGroup.IsEditing = !_ActiveGroup.IsEditing;  } );        
+            GroupSwitchToEditingMode = new Commands.RelayCommand((item) => { _ActiveGroup.IsEditing = !_ActiveGroup.IsEditing;  } );
+
+            SearchFreqsCommand = new Commands.RelayCommand((item) => { SearchFreqs(); }, (item) => { return CanSearchFreqs(); });
+            //SearchCommand = new Commands.RelayCommand((item) => {})
 
         }
 
@@ -324,8 +343,6 @@ namespace FreqMngr.ViewModels
         #endregion
 
         #region Groups New, Edit and Delete Methods
-
-
 
         private async void NewGroup()
         {
@@ -524,6 +541,35 @@ namespace FreqMngr.ViewModels
             if (_ActiveFreq != null)
                 await Service.UpdateFreqAsync(_ActiveFreq);
         }
+
+
+        private async void SearchFreqs()
+        {
+            if (String.IsNullOrWhiteSpace(SearchTerm)==true)
+                return;
+
+            IsBusy = true;
+            _Freqs.Clear();
+            List<Freq> freqs = await Service.SearchFreqsAsync(SearchTerm);
+            foreach (Freq freq in freqs)
+                _Freqs.Add(freq);
+            IsBusy = false;
+        }
+
+        private bool CanSearchFreqs()
+        {
+            if (Service == null)
+                return false;
+
+            if (Service.Connected == false)
+                return false;
+
+            if (String.IsNullOrWhiteSpace(SearchTerm) == true)
+                return false;
+
+            return true;
+        }
+
         #endregion
 
     }

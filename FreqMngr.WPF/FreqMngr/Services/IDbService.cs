@@ -11,6 +11,8 @@ namespace FreqMngr.Services
 {
     interface IDbService
     {
+        bool Connected { get; }
+
         bool Connect();
         void Disconnect();
 
@@ -35,5 +37,8 @@ namespace FreqMngr.Services
         Task<bool> InsertFreqAsync(Freq freq);
         bool DeleteFreq(Freq freq);
         Task<bool> DeleteFreqAsync(Freq freq);
+
+        List<Freq> SearchFreqs(String term);
+        Task<List<Freq>> SearchFreqsAsync(String term);
     }
 }

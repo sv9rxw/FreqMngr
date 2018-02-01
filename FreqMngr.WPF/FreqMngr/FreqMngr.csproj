@@ -182,6 +182,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>FreqDB.mdf</DependentUpon>
     </Content>
+    <Resource Include="Images\Search_16x.png" />
     <Resource Include="Images\Copy_16x.png" />
     <Resource Include="Images\Cut_16x.png" />
     <Resource Include="Images\Paste_16x.png" />

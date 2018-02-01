@@ -83,11 +83,9 @@ namespace FreqMngr.Services
         private bool _Connected = false;
         public bool Connected
         {
-            get
-            {
-                return _Connected;                        
-            }
+            get { return _Connected; }
         }
+        
 
         public DbService(String mdfDbFilePath)
         {
@@ -548,6 +546,67 @@ namespace FreqMngr.Services
         public Task<bool> DeleteFreqAsync(Freq freq)
         {
             return Task.Factory.StartNew(() => { return DeleteFreq(freq); });
+        }
+
+        public List<Freq> SearchFreqs(string term)
+        {
+            if (String.IsNullOrWhiteSpace(term) == true)
+                return null;
+
+            if (_Connected == false)
+                return null;
+            
+            String searchQuery = "SELECT * FROM TableFreqs WHERE CHARINDEX('" + term + "', " + TABLEFREQS_CLM_NAME + ") > 0";
+            SqlCommand cmd = new SqlCommand(searchQuery, _SqlConnection);
+
+            List<Freq> resultList = new List<Freq>();
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            while(reader.Read())
+            {
+                int freqId = (int)reader[TABLEFREQS_CLM_ID];
+                double freqFrequency = (double)reader[TABLEFREQS_CLM_FREQUENCY];
+                String freqName = (String)reader[TABLEFREQS_CLM_NAME];
+                int parentId = reader[TABLEFREQS_CLM_PARENTID] as int? ?? default(int);
+                String freqModulation = SafeGetString(reader, TABLEFREQS_CLM_IDX_MODULATION);
+                String freqModulationType = SafeGetString(reader, TABLEFREQS_CLM_IDX_MODULATIONTYPE);
+                String freqProtocol = SafeGetString(reader, TABLEFREQS_CLM_IDX_PROTOCOL);
+                double freqBandwidth = reader[TABLEFREQS_CLM_BANDWIDTH] as double? ?? default(double);
+
+                String freqCountry = SafeGetString(reader, TABLEFREQS_CLM_IDX_COUNTRY);
+                String freqUser = SafeGetString(reader, TABLEFREQS_CLM_IDX_SERVICE);
+                String freqDescription = SafeGetString(reader, TABLEFREQS_CLM_IDX_DESCRIPTION);
+                String freqURLs = SafeGetString(reader, TABLEFREQS_CLM_IDX_URLS);
+                String freqQSL = SafeGetString(reader, TABLEFREQS_CLM_IDX_QSL);
+                String freqCoordinates = SafeGetString(reader, TABLEFREQS_CLM_IDX_COORDINATES);
+
+
+                Freq freq = new Freq()
+                {
+                    Id = freqId,                    
+                    Frequency = freqFrequency,
+                    Name = freqName,
+                    Modulation = freqModulation,
+                    ModulationType = freqModulationType,
+                    Protocol = freqProtocol,
+                    Bandwidth = freqBandwidth,
+                    Country = freqCountry,
+                    Service = freqUser,
+                    Description = freqDescription,
+                    URLs = freqURLs,
+                    QSL = freqQSL,
+                    Coordinates = freqCoordinates
+                };
+
+                resultList.Add(freq);
+            }
+            reader.Close();
+            return resultList;
+        }
+
+        public Task<List<Freq>> SearchFreqsAsync(string term)
+        {
+            return Task.Factory.StartNew(() => { return SearchFreqs(term); });
         }
     }
 }
