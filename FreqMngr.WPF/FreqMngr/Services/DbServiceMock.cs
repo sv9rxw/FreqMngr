@@ -129,5 +129,35 @@ namespace FreqMngr.Services
         {
             throw new NotImplementedException();
         }
+
+        public bool InsertGroup(Group gorup)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> InsertGroupAsync(Group group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteGroup(Group group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteGroupAsync(Group group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateGroup(Group group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateGroypAsync(Group group)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

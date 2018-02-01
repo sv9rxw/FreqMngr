@@ -180,7 +180,7 @@ namespace FreqMngr.ViewModels
         public Commands.RelayCommand LoadDatabaseCommand { get; set; }
         public Commands.RelayCommand CloseDatabaseCommand { get; set; }
         public Commands.RelayCommand NewGroupCommand { get; set; }
-        public Commands.RelayCommand EditGroupCommand { get; set; }
+        public Commands.RelayCommand RenameGroupCommand { get; set; }
         public Commands.RelayCommand DeleteGroupCommand { get; set; }
         public Commands.RelayCommand GroupSwitchToEditingMode { get; private set; }
         public Commands.RelayCommand FreqsSelectionChangedCommand { get; set; }
@@ -205,7 +205,7 @@ namespace FreqMngr.ViewModels
                 //_DbFilePath = folderPath + @"\FreqDB.mdf";
                 //_DbFilePath = @"..\..\FreqDB.mdf";
                 _DbFilePath = @"C:\Users\Dirty Harry\Source\FreqMngr\FreqMngr.WPF\FreqMngr\FreqDb.mdf";
-                System.Windows.MessageBox.Show(_DbFilePath);
+                //System.Windows.MessageBox.Show(_DbFilePath);
                 Service = new DbService(_DbFilePath);
             }            
 
@@ -216,7 +216,8 @@ namespace FreqMngr.ViewModels
             LoadDatabaseCommand = new Commands.RelayCommand((item) => { LoadDatabase(); }, (item) => { return true; });
             CloseDatabaseCommand = new Commands.RelayCommand((item) => { CloseDatabase(); });
 
-
+            NewGroupCommand = new Commands.RelayCommand((item) => { NewGroup(); }, (item) => { if (_ActiveGroup == null) return false; return true; });
+            RenameGroupCommand = new Commands.RelayCommand((item) => { RenameGroup(_ActiveGroup); }, (item) => { if (_ActiveGroup == null) return false; return true; });
 
             FreqsSelectionChangedCommand = new Commands.RelayCommand((item) =>
             {
@@ -246,6 +247,20 @@ namespace FreqMngr.ViewModels
             PasteFreqsCommand = new Commands.RelayCommand((item) => { PasteFreqs(); }, (item) => { return CanPasteFreqs(); });
             GroupSwitchToEditingMode = new Commands.RelayCommand((item) => { _ActiveGroup.IsEditing = !_ActiveGroup.IsEditing;  } );        
 
+        }
+
+        private String ShowDialog(Func<TextDialogViewModel, bool?> showDialog)
+        {
+            String result = null;
+            var dialogViewModel = new TextDialogViewModel();
+
+            bool? success = showDialog(dialogViewModel);
+            if (success == true)
+            {
+                result = dialogViewModel.Text;
+            }
+
+            return result;
         }
 
         private async void MainWindowViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -298,10 +313,35 @@ namespace FreqMngr.ViewModels
 
         #region Groups New, Edit and Delete Methods
 
-        private void EditGroup()
+        private async void NewGroup()
+        {
+            String newGroupName = ShowDialog(viewModel => _DialogService.ShowDialog(this, viewModel));
+            if (newGroupName!=null)
+            {
+                Group group = new Group(newGroupName, _ActiveGroup);
+                bool status = await Service.InsertGroupAsync(group);                
+            }
+        }
+
+        private async void RenameGroup(Group group)
+        {
+            if (group == null)
+                return;
+
+            String groupName = ShowDialog(viewModel => _DialogService.ShowDialog(this, viewModel));
+            if (groupName != null)
+            {
+                group.Name = groupName;
+                bool status = await Service.UpdateGroypAsync(group);
+            }
+        }
+
+        private void DeleteGroup()
         {
             
         }
+
+
 
         #endregion
 

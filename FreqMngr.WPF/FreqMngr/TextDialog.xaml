@@ -13,6 +13,7 @@
     WindowStartupLocation="CenterOwner"
     SizeToContent="WidthAndHeight"
     ResizeMode="NoResize"
+    ShowInTaskbar="False"
     d:DataContext="{d:DesignInstance {x:Type ViewModels:TextDialogViewModel}}" Width="230" Height="90">
 
     <Window.Resources>

@@ -25,6 +25,11 @@ namespace FreqMngr.Services
         private static String TABLEGROUPS_CLM_NAME = "Name";
         private static String TABLEGROUPS_CLM_PARENTID = "ParentId";
 
+        private static String TABLEGROUPS_PARAM_ID = "@pId";
+        private static String TABLEGROUPS_PARAM_NAME = "@pName";
+        private static String TABLEGROUPS_PARAM_PARENTID = "@pParentId";
+
+
         private static String TABLEFREQS_CLM_ID = "Id";
         private static String TABLEFREQS_CLM_FREQUENCY = "Frequency";
         private static String TABLEFREQS_CLM_NAME = "Name";        
@@ -409,6 +414,110 @@ namespace FreqMngr.Services
             return Task.Factory.StartNew(() => { return GetModulations(); });
         }
 
+        public bool InsertGroup(Group group)
+        {
+            if (group == null)
+                return false;
 
+            if (_Connected == false)
+                return false;
+
+            String insertQuery = "INSERT INTO TableGroups (" +
+                TABLEGROUPS_CLM_NAME + "," +
+                TABLEGROUPS_CLM_PARENTID + ")" +
+                " VALUES (" +
+                TABLEGROUPS_PARAM_NAME + "," +
+                TABLEGROUPS_PARAM_PARENTID + ")";
+
+
+            SqlCommand cmd = new SqlCommand(insertQuery, _SqlConnection);
+            cmd.Parameters.AddWithValue(TABLEGROUPS_PARAM_NAME, group.Name);
+            cmd.Parameters.Add(TABLEGROUPS_PARAM_PARENTID, SqlDbType.Int).Value = group.Parent.Id;
+
+            int rows = 0;
+            try
+            {
+                rows = cmd.ExecuteNonQuery();
+            }
+            catch (Exception expt)
+            {
+                Debug.WriteLine("Error in InsertGroup(): " + expt.Message);
+                return false;
+            }
+
+            Debug.WriteLine("Success: " + rows.ToString() + " rows affected");
+            return true;
+        }
+
+        public Task<bool> InsertGroupAsync(Group group)
+        {
+            return Task.Factory.StartNew(() => { return InsertGroup(group); });
+        }
+
+        public bool DeleteGroup(Group group)
+        {
+            if (group == null)
+                return false;
+
+            if (_Connected == false)
+                return false;
+
+            String deleteQuery = "DELETE FROM TableGroups WHERE Id=@pId";
+            SqlCommand cmd = new SqlCommand(deleteQuery, _SqlConnection);
+            cmd.Parameters.Add(TABLEGROUPS_PARAM_ID, SqlDbType.Int).Value = group.Id;
+
+            int rows = 0;
+            try
+            {
+                rows = cmd.ExecuteNonQuery();
+            }
+            catch (Exception expt)
+            {
+                Debug.WriteLine("Error in DeleteGroup(): " + expt.Message);
+                return false;
+            }
+
+            Debug.WriteLine("Success: " + rows.ToString() + " rows affected");
+        
+            return true;
+        }
+
+        public Task<bool> DeleteGroupAsync(Group group)
+        {
+            return Task.Factory.StartNew(() => { return DeleteGroup(group); });
+        }
+
+        public bool UpdateGroup(Group group)
+        {
+            String updateQuery = "UPDATE TableGroups SET " +
+                TABLEGROUPS_CLM_NAME + " = " + TABLEGROUPS_PARAM_NAME + "," +
+                TABLEGROUPS_CLM_PARENTID + " = " + TABLEGROUPS_PARAM_PARENTID +
+                " WHERE " +
+                TABLEGROUPS_CLM_ID + " = " + TABLEGROUPS_PARAM_ID;
+
+            SqlCommand cmd = new SqlCommand(updateQuery, _SqlConnection);
+            cmd.Parameters.AddWithValue(TABLEGROUPS_PARAM_NAME, group.Name);
+            cmd.Parameters.Add(TABLEGROUPS_PARAM_PARENTID, SqlDbType.Int).Value = group.ParentId;
+            cmd.Parameters.Add(TABLEGROUPS_PARAM_ID, SqlDbType.Int).Value = group.Id;
+
+            int rows = 0;
+            try
+            {
+                rows = cmd.ExecuteNonQuery();
+            }
+            catch (Exception expt)
+            {
+                Debug.WriteLine("Error in UpdateGroup(): " + expt.Message);
+                return false;
+            }
+
+            Debug.WriteLine("Sucess: " + rows.ToString() + " rows affected");
+            return true;
+        }
+
+        public Task<bool> UpdateGroypAsync(Group group)
+        {
+            return Task.Factory.StartNew(() => { return UpdateGroup(group); });
+        }
     }
 }
