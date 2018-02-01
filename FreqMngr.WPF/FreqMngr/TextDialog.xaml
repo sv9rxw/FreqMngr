@@ -9,33 +9,40 @@
     xmlns:helpers="clr-namespace:FreqMngr.Helpers"
     xmlns:ViewModels="clr-namespace:FreqMngr.ViewModels"                        
     mc:Ignorable="d"
-    Title="Add Text"
+    Title="New Group"
     WindowStartupLocation="CenterOwner"
     SizeToContent="WidthAndHeight"
     ResizeMode="NoResize"
-    d:DataContext="{d:DesignInstance {x:Type ViewModels:TextDialogViewModel}}">
+    d:DataContext="{d:DesignInstance {x:Type ViewModels:TextDialogViewModel}}" Width="230" Height="90">
 
     <Window.Resources>
         
     </Window.Resources>
 
-    <StackPanel>
+    <StackPanel Margin="5,5,5,5">
         <TextBox
             AutomationProperties.AutomationId="Csl8dP93gUGQLj7rVZxDAg"
             Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}" />
 
-        <StackPanel
-            Orientation="Horizontal"
-            HorizontalAlignment="Right">
+        <Grid Margin="0,5,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
             <Button
                 AutomationProperties.AutomationId="eyRW_87u20qR7QTCypm2RQ"
                 Content="OK"
                 Command="{Binding OkCommand}"
-                IsDefault="True" />
+                IsDefault="True"
+                Width="80"
+                Grid.Column="0"/>
             <Button
                 AutomationProperties.AutomationId="I91auHr_EECzhSZyIfvvzQ"
                 Content="Cancel"
-                IsCancel="True" />
-        </StackPanel>
+                IsCancel="True"
+                Width="80"
+                Grid.Column="1"/>
+        </Grid>
     </StackPanel>
 </Window>
