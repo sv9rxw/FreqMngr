@@ -187,9 +187,7 @@ namespace FreqMngr.Services
                     Coordinates = freqCoordinates
                 };
 
-                freqList.Add(freq);
-
-                Debug.WriteLine("Found: " + freqId.ToString() + ", " + freqName);
+                freqList.Add(freq);                
             }
 
             reader.Close();
